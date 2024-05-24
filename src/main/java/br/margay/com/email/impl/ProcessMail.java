@@ -12,6 +12,7 @@ import br.margay.com.email.enums.RecipientType;
 import br.margay.com.email.ipack.Account;
 import br.margay.com.exception.CoreMailException;
 import br.margay.com.email.ipack.IMail;
+import br.margay.com.util.MargayUtils;
 import com.google.common.base.Strings;
 
 import java.io.IOException;
