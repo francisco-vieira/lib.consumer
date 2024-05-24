@@ -4,8 +4,7 @@
  * emails: suporte@margay.com.br, contato@margay.com.br
  * celular: (93) 991663577
  */
-package br.margay.com.builder;
-
+package br.margay.com.email.builder;
 
 
 import br.margay.com.email.enums.EConfig;
@@ -58,7 +57,7 @@ public class BuilderMail implements IBuilderMail<BuilderMail> {
 
     private String text;
 
-    protected  BuilderMail(String username, String password, Properties configMail) throws CoreMailException {
+    protected BuilderMail(String username, String password, Properties configMail) throws CoreMailException {
         this.configMail(configMail);
         Authenticator auth = new Authenticator() {
             @Override
@@ -81,9 +80,17 @@ public class BuilderMail implements IBuilderMail<BuilderMail> {
         return new BuilderMail(username, password, new Properties());
     }
 
-    public BuilderMail configMail(Properties configMail) throws CoreMailException {
-        this.props = configMail;
-        return this;
+    private List<InternetAddress> filterRecipientType(List<MailType> array, RecipientType type) {
+        return Arrays.stream(array.toArray(new MailType[0]))
+                .filter(f -> Objects.equals(f.recipientType(), type))
+                .map(mailType -> {
+                    try {
+                        return mailType.internetAddress();
+                    } catch (AddressException | UnsupportedEncodingException e) {
+                        throw new CoreMailException(e);
+                    }
+
+                }).collect(Collectors.toList());
     }
 
     public boolean send() throws CoreMailException {
@@ -94,6 +101,55 @@ public class BuilderMail implements IBuilderMail<BuilderMail> {
         }
         LOG.log(Level.INFO, "Send MailMassege");
         return true;
+    }
+
+    private void textPlain(String data) throws CoreMailException {
+        if (MargayUtils.isNotEmpty(data)) {
+            try {
+                message.setContent(data, "text/plain; charset=utf-8");
+            } catch (MessagingException e) {
+                throw new CoreMailException(e);
+            }
+        }
+    }
+
+    private void load() {
+        if (Objects.isNull(props) || props.isEmpty()) {
+            LOG.log(Level.INFO, "Load properties");
+            int timeout = 30000;
+            props = new Properties();
+            props.put(EConfig.AUTH.toString(), true);
+            props.put(EConfig.START_TLS_ENABLE.toString(), "true");
+            props.put(EConfig.HOST.toString(), "smtp.sparkpostmail.com");
+            props.put(EConfig.PORT.toString(), "587");
+            props.put(EConfig.TRUST.toString(), "*");
+
+            props.put(EConfig.CONNECTION_TIMEOUT.toString(), String.valueOf(timeout));
+            props.put(EConfig.TIME_OUT.toString(), String.valueOf(timeout));
+            props.put(EConfig.WRITE_TIMEOUT.toString(), String.valueOf(timeout));
+        }
+    }
+
+    private interface MailType {
+
+        InternetAddress internetAddress() throws AddressException, UnsupportedEncodingException;
+
+        RecipientType recipientType();
+
+    }
+
+    private BuilderMail html(String html) throws CoreMailException {
+        try {
+            message.setContent(html, "text/html; charset=utf-8");
+        } catch (MessagingException e) {
+            throw new CoreMailException(e);
+        }
+        return this;
+    }
+
+    public BuilderMail configMail(Properties configMail) throws CoreMailException {
+        this.props = configMail;
+        return this;
     }
 
     public BuilderMail from(String email) throws CoreMailException {
@@ -170,19 +226,6 @@ public class BuilderMail implements IBuilderMail<BuilderMail> {
         return this;
     }
 
-    private List<InternetAddress> filterRecipientType(List<MailType> array, RecipientType type) {
-        return Arrays.stream(array.toArray(new MailType[0]))
-                .filter(f -> Objects.equals(f.recipientType(), type))
-                .map(mailType -> {
-                    try {
-                        return mailType.internetAddress();
-                    } catch (AddressException | UnsupportedEncodingException e) {
-                        throw new CoreMailException(e);
-                    }
-
-                }).collect(Collectors.toList());
-    }
-
     public BuilderMail subject(String subject) throws CoreMailException {
         try {
             message.setSubject(subject);
@@ -244,20 +287,10 @@ public class BuilderMail implements IBuilderMail<BuilderMail> {
         return this;
     }
 
-    private void textPlain(String data) throws CoreMailException {
-        if (MargayUtils.isNotEmpty(data)) {
-            try {
-                message.setContent(data, "text/plain; charset=utf-8");
-            } catch (MessagingException e) {
-                throw new CoreMailException(e);
-            }
-        }
-    }
-
-    public BuilderMail date(Long milisegundos) throws CoreMailException {
+    public BuilderMail date(Long milliseconds) throws CoreMailException {
         try {
             DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            Date date = new Date(milisegundos);
+            Date date = new Date(milliseconds);
             String formattedDate = dateFormat.format(date);
             Date parsedDate = dateFormat.parse(formattedDate);
             message.setSentDate(parsedDate);
@@ -276,40 +309,5 @@ public class BuilderMail implements IBuilderMail<BuilderMail> {
         this.text = textInto;
         return this;
     }
-
-    private BuilderMail html(String html) throws CoreMailException {
-        try {
-            message.setContent(html, "text/html; charset=utf-8");
-        } catch (MessagingException e) {
-            throw new CoreMailException(e);
-        }
-        return this;
-    }
-
-    private void load() {
-        if (Objects.isNull(props) || props.isEmpty()) {
-            LOG.log(Level.INFO, "Load properties");
-            int timeout = 30000;
-            props = new Properties();
-            props.put(EConfig.AUTH.toString(), true);
-            props.put(EConfig.START_TLS_ENABLE.toString(), "true");
-            props.put(EConfig.HOST.toString(), "smtp.sparkpostmail.com");
-            props.put(EConfig.PORT.toString(), "587");
-            props.put(EConfig.TRUST.toString(), "*");
-
-            props.put(EConfig.CONNECTION_TIMEOUT.toString(), String.valueOf(timeout));
-            props.put(EConfig.TIME_OUT.toString(), String.valueOf(timeout));
-            props.put(EConfig.WRITE_TIMEOUT.toString(), String.valueOf(timeout));
-        }
-    }
-
-    private interface MailType {
-
-        InternetAddress internetAddress() throws AddressException, UnsupportedEncodingException;
-
-        RecipientType recipientType();
-
-    }
-
 
 }

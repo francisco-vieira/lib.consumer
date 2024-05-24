@@ -6,7 +6,7 @@
  */
 package br.margay.com.util;
 
-import br.margay.com.builder.BuildExclusionStrategy;
+import br.margay.com.email.builder.BuildExclusionStrategy;
 import br.margay.com.consume.adapter.StringAdapter;
 import br.margay.com.exception.ServiceException;
 import com.google.api.client.util.Strings;

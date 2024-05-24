@@ -6,7 +6,7 @@
  */
 package br.margay.com.email.impl;
 
-import br.margay.com.builder.BuilderMail;
+import br.margay.com.email.builder.BuilderMail;
 import br.margay.com.email.SubmitMail;
 import br.margay.com.email.enums.RecipientType;
 import br.margay.com.email.ipack.Account;
