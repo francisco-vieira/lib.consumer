@@ -6,6 +6,7 @@
  */
 package br.margay.com.util;
 
+import br.margay.com.builder.BuildExclusionStrategy;
 import br.margay.com.consume.adapter.StringAdapter;
 import br.margay.com.exception.ServiceException;
 import com.google.api.client.util.Strings;
@@ -39,6 +40,7 @@ public class ProcessorUtil {
     public static Gson gsonInstance() {
         if (gson == null) {
             GsonBuilder builder = new GsonBuilder();
+            builder.setExclusionStrategies(new BuildExclusionStrategy());
             builder.registerTypeAdapter(String.class, new StringAdapter());
             gson = builder.create();
             Logger.getLogger("genericJson")
@@ -65,7 +67,7 @@ public class ProcessorUtil {
             BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
 
             Path path = Paths.get(filePath);
-            if(Strings.isNullOrEmpty(filePath) || filePath.equalsIgnoreCase(".")){
+            if (Strings.isNullOrEmpty(filePath) || filePath.equalsIgnoreCase(".")) {
                 path = Paths.get("qrcode.png");
             }
 

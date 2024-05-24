@@ -40,7 +40,14 @@ public class MainTest {
     Gson g = ProcessorUtil.gsonInstance();
 
     private final String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiY2xpZW50SWQiOiJDbGllbnRfSWRfYjNmOTlkYjQwZTFlYzIwNmRiODYxOTRmNGNiOTZjMDNkMzBkYTA1YSIsImFjY291bnQiOjU3MDg3NCwiYWNjb3VudF9jb2RlIjoiOWMxMDBjZjYwMjFmZTViM2YyNTI0MTkzNzRiM2UzMDAiLCJzY29wZXMiOlsiY29iLnJlYWQiLCJjb2Iud3JpdGUiLCJjb2J2LnJlYWQiLCJjb2J2LndyaXRlIiwiZ24uYmFsYW5jZS5yZWFkIiwiZ24ucGl4LmV2cC5yZWFkIiwiZ24ucGl4LmV2cC53cml0ZSIsImduLnBpeC5zZW5kLnJlYWQiLCJnbi5yZXBvcnRzLnJlYWQiLCJnbi5yZXBvcnRzLndyaXRlIiwiZ24uc2V0dGluZ3MucmVhZCIsImduLnNldHRpbmdzLndyaXRlIiwiZ24uc3BsaXQucmVhZCIsImduLnNwbGl0LndyaXRlIiwibG90ZWNvYnYucmVhZCIsImxvdGVjb2J2LndyaXRlIiwicGF5bG9hZGxvY2F0aW9uLnJlYWQiLCJwYXlsb2FkbG9jYXRpb24ud3JpdGUiLCJwaXgucmVhZCIsInBpeC5zZW5kIiwicGl4LndyaXRlIiwid2ViaG9vay5yZWFkIiwid2ViaG9vay53cml0ZSJdLCJleHBpcmVzSW4iOjM2MDAsImNvbmZpZ3VyYXRpb24iOnsieDV0I1MyNTYiOiJ1QnIxelpaL2NwT05GZ2ZOL0RHdmdFVkZSeVo5ZlNyNlR0VEJWWlI5WVB3PSJ9LCJpYXQiOjE3MTY1Mjg1NzEsImV4cCI6MTcxNjUzMjE3MX0.yvj1YYaQlS0TTkeS4eiAeJVpiMVTRJ_P1FrY4rqbMRQ";
+
+    private final String usenameEfi = "";
+    private final String passwordEfi = "";
+
+
     private final String tokenSicoob = "";
+    private final String clientIdSicoob = "";
+
     @Test
     public void requestCNPJTest() {
         Consumer c = Consumer.getInstance();
@@ -78,7 +85,7 @@ public class MainTest {
         c.setBase("https://sandbox.sicoob.com.br/sicoob/sandbox/pix/api/v2");
 
         c.header("Accept", "application/json");
-        c.header("client_id", "9b5e603e428cc477a2841e2683c92d21");
+        c.header("client_id", clientIdSicoob);
 
         String result = c.get("cob/ITgRlxIWmI5AhxMjFoQy4bwTqU9z7xj4BDJ", parans);
         System.out.println(result);
@@ -91,7 +98,7 @@ public class MainTest {
     public void requestSicoobPixPOST() {
         AuthorizationToken.authorization(tokenSicoob);
         Consumer c = Consumer.getInstance();
-        c.header("client_id", "9b5e603e428cc477a2841e2683c92d21");
+        c.header("client_id", clientIdSicoob);
         c.header("Accept", "application/json");
         c.setBase("https://sandbox.sicoob.com.br/sicoob/sandbox/pix/api");
 
@@ -139,7 +146,7 @@ public class MainTest {
                 .calendario(new Calendario(6000))
                 .devedor(new Devedor("João de Maria", "36638219006"))
                 .solicitacaoPagador("O peddido super")
-                .chave("71cdf9ba-c695-4e3c-b010-abb521a3f1be")
+                .chave("0acfbcd3-ab96-4cf5-8cc2-44f32495597f")
                 .valor(new Valor("10.34"))
                 .infoAdicionais(Collections.singletonList(new InfoAdicional("valor", "Informações sobre pix")))
                 .build();
@@ -160,10 +167,7 @@ public class MainTest {
     @Test
     public void requestEfiAuthorization() {
 
-        AuthorizationToken.authorization(
-                "",
-                ""
-        );
+        AuthorizationToken.authorization(usenameEfi, passwordEfi);
 
         Consumer c = Consumer.getInstance(
                 "homologacao-570874-SociusHomologacao.p12",
