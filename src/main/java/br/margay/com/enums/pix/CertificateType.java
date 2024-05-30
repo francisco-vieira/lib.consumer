@@ -11,16 +11,24 @@ package br.margay.com.enums.pix;
  * Criado em 22/05/2024
  */
 public enum CertificateType {
-    PKCS_12("PKCS12");
+    PKCS_12("PKCS12", ".p12"),
+    JKS("JKS", ".jks"),
+    PEM("X.509", ".pem");
 
     private final String certificate;
+    private final String extension;
 
-    CertificateType(String certificate) {
+    CertificateType(String certificate, String extension) {
         this.certificate = certificate;
+        this.extension = extension;
     }
 
     public String toString() {
         return certificate;
+    }
+
+    public String getExtension() {
+        return extension;
     }
 
 }

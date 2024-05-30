@@ -12,7 +12,7 @@ import br.margay.com.email.enums.RecipientType;
 import br.margay.com.email.ipack.Account;
 import br.margay.com.exception.CoreMailException;
 import br.margay.com.email.ipack.IMail;
-import br.margay.com.util.MargayUtils;
+import br.margay.com.util.StringUtils;
 import com.google.common.base.Strings;
 
 import java.io.IOException;
@@ -88,7 +88,7 @@ public final class ProcessMail implements SubmitMail {
     }
 
     public void setBody(String templateOrText, Map<String, String> parameters) {
-        String html = MargayUtils.isNotEmpty(templateOrText) ? templateOrText : loadHtmlFile();
+        String html = StringUtils.isNotEmpty(templateOrText) ? templateOrText : loadHtmlFile();
         String body = replaceParameters(html, parameters);
         builder.body(body);
     }

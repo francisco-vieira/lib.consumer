@@ -8,7 +8,9 @@ import br.margay.com.exception.ServiceException;
 import br.margay.com.ipack.IConsumer;
 import br.margay.com.enums.pix.CertificateType;
 import br.margay.com.enums.cnpj.HostBase;
+import br.margay.com.model.KeyStorePix;
 import br.margay.com.util.ProcessorUtil;
+import br.margay.com.util.StringUtils;
 import com.google.api.client.util.Strings;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -84,7 +86,24 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
         }
     }
 
+    public ConsumerAbs(KeyStorePix storePix) throws ServiceException {
+        try {
+            this.headers = new HashMap<>();
+            char[] pass = storePix.getPassword().toCharArray();
 
+           KeyStore keyStore = StringUtils.base64ToKeyStore(storePix);
+
+            http = HttpClients.custom()
+                    .setSSLSocketFactory(new SSLConnectionSocketFactory(
+                            SSLContexts.custom()
+                                    .loadKeyMaterial(keyStore, pass)
+                                    .build(),
+                            NoopHostnameVerifier.INSTANCE))
+                    .build();
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+    }
 
     public abstract RequestConfig requestConfig();
 

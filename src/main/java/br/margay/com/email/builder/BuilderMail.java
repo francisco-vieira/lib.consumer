@@ -12,7 +12,7 @@ import br.margay.com.email.enums.RecipientType;
 import br.margay.com.email.ipack.Account;
 import br.margay.com.exception.CoreMailException;
 import br.margay.com.email.ipack.IBuilderMail;
-import br.margay.com.util.MargayUtils;
+import br.margay.com.util.StringUtils;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
@@ -104,7 +104,7 @@ public class BuilderMail implements IBuilderMail<BuilderMail> {
     }
 
     private void textPlain(String data) throws CoreMailException {
-        if (MargayUtils.isNotEmpty(data)) {
+        if (StringUtils.isNotEmpty(data)) {
             try {
                 message.setContent(data, "text/plain; charset=utf-8");
             } catch (MessagingException e) {
@@ -160,7 +160,7 @@ public class BuilderMail implements IBuilderMail<BuilderMail> {
 
         try {
             InternetAddress address = new InternetAddress(email);
-            if (MargayUtils.isNotEmpty(username)) {
+            if (StringUtils.isNotEmpty(username)) {
                 address = new InternetAddress(email, username);
             }
             message.setFrom(address);
@@ -177,7 +177,7 @@ public class BuilderMail implements IBuilderMail<BuilderMail> {
             emails.forEach((mail, recipientType) -> {
                 String personal = mail.personal();
                 String address = mail.address();
-                if (MargayUtils.isNotEmpty(personal)) {
+                if (StringUtils.isNotEmpty(personal)) {
                     array.add(new MailType() {
                         @Override
                         public InternetAddress internetAddress() throws UnsupportedEncodingException {
@@ -247,7 +247,7 @@ public class BuilderMail implements IBuilderMail<BuilderMail> {
         try {
             Multipart multipart = new MimeMultipart();
 
-            if (MargayUtils.isNotEmpty(content)) {
+            if (StringUtils.isNotEmpty(content)) {
                 MimeBodyPart contentText = new MimeBodyPart();
                 if (isPlain) {
                     contentText.setContent(content, "text/plain; charset=utf-8");
@@ -260,7 +260,7 @@ public class BuilderMail implements IBuilderMail<BuilderMail> {
             for (String attachment : arrayList) {
                 MimeBodyPart contetFile = new MimeBodyPart();
                 contetFile.attachFile(attachment);
-                if (MargayUtils.isNotEmpty(this.text)) {
+                if (StringUtils.isNotEmpty(this.text)) {
                     contetFile.setText(this.text, "UTF-8");
                 }
                 multipart.addBodyPart(contetFile);
@@ -289,7 +289,7 @@ public class BuilderMail implements IBuilderMail<BuilderMail> {
 
     public BuilderMail date(Long milliseconds) throws CoreMailException {
         try {
-            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            DateFormat dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.DEFAULT);
             Date date = new Date(milliseconds);
             String formattedDate = dateFormat.format(date);
             Date parsedDate = dateFormat.parse(formattedDate);

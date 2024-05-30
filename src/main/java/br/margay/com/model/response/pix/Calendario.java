@@ -4,7 +4,7 @@
  * emails: suporte@margay.com.br, contato@margay.com.br
  * celular: (93) 991663577
  */
-package br.margay.com.request.model.pix;
+package br.margay.com.model.response.pix;
 
 import java.io.Serializable;
 
@@ -13,7 +13,9 @@ import java.io.Serializable;
  * Criado em 22/05/2024
  */
 public class Calendario implements Serializable {
+
     private int expiracao;
+    private String  criacao;
 
     public Calendario() {
     }
@@ -22,11 +24,24 @@ public class Calendario implements Serializable {
         this.expiracao = expiracao;
     }
 
+    public Calendario(int expiracao, String  criacao) {
+        this.expiracao = expiracao;
+        this.criacao = criacao;
+    }
+
     public int getExpiracao() {
         return expiracao;
     }
 
     public void setExpiracao(int expiracao) {
         this.expiracao = expiracao;
+    }
+
+    public String  getCriacao() {
+        return criacao;
+    }
+
+    public void setCriacao(String criacao) {
+        this.criacao = criacao;
     }
 }
