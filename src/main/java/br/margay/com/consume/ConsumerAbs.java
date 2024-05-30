@@ -89,9 +89,15 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
     public ConsumerAbs(KeyStorePix storePix) throws ServiceException {
         try {
             this.headers = new HashMap<>();
-            char[] pass = storePix.getPassword().toCharArray();
 
-           KeyStore keyStore = StringUtils.base64ToKeyStore(storePix);
+            String password = storePix.getPassword();
+            if (StringUtils.isNull(password)) {
+                password = "";
+            }
+
+            char[] pass = password.toCharArray();
+
+            KeyStore keyStore = StringUtils.base64ToKeyStore(storePix);
 
             http = HttpClients.custom()
                     .setSSLSocketFactory(new SSLConnectionSocketFactory(

@@ -13,7 +13,7 @@ import java.util.prefs.Preferences;
 public class AuthorizationToken {
 
     private static String token;
-    private static final String TOKEN_KEY = "auth_token";
+    private static AuthorizationType tokenType;
     private static final long TOKEN_EXPIRATION_TIME = 30 * 60 * 1000;
     private static long tokenExpirationTime;
 
@@ -21,16 +21,15 @@ public class AuthorizationToken {
         if (!Strings.isNullOrEmpty(token)) {
             Preferences prefs = Preferences.userNodeForPackage(AuthorizationToken.class);
             tokenExpirationTime = System.currentTimeMillis() + TOKEN_EXPIRATION_TIME;
-            AuthorizationToken.token = token;
-            prefs.put(TOKEN_KEY, AuthorizationToken.token);
+            String authType = getKey();
+            AuthorizationToken.token = authType.concat(token);
+            prefs.put(authType, AuthorizationToken.token);
         }
     }
 
     public static void authorization(String token) {
-        if (!isTokenValid()) {
-           String type = AuthorizationType.TOKEN_BEARER.toString();
-            new AuthorizationToken(type.concat(token));
-        }
+            tokenType = AuthorizationType.TOKEN_BEARER;
+            new AuthorizationToken(token);
     }
 
     public static void authorization(String username, String password) {
@@ -43,8 +42,8 @@ public class AuthorizationToken {
 
                 String auth = username + ":" + password;
                 token = DatatypeConverter.printBase64Binary(auth.getBytes(StandardCharsets.UTF_8));
-                String type = AuthorizationType.TOKEN_BASIC.toString();
-                new AuthorizationToken(type.concat(token));
+                tokenType = AuthorizationType.TOKEN_BASIC;
+                new AuthorizationToken(token);
             } catch (Exception e) {
                 throw new ServiceException(e.getMessage());
             }
@@ -52,10 +51,9 @@ public class AuthorizationToken {
         }
     }
 
-
     public void reset() {
         Preferences prefs = Preferences.userNodeForPackage(AuthorizationToken.class);
-        prefs.remove(TOKEN_KEY);
+        prefs.remove(getKey());
     }
 
     public static String getTokenAuthorization() {
@@ -63,11 +61,15 @@ public class AuthorizationToken {
             return null;
         }
         Preferences prefs = Preferences.userNodeForPackage(AuthorizationToken.class);
-        return prefs.get(TOKEN_KEY, null);
+        return prefs.get(getKey(), null);
     }
 
     public static synchronized boolean isTokenValid() {
         return token != null && System.currentTimeMillis() <= tokenExpirationTime;
+    }
+
+    public static String getKey(){
+       return tokenType.toString();
     }
 
 }

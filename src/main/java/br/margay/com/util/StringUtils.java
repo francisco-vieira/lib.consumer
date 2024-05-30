@@ -33,6 +33,9 @@ public class StringUtils {
         return value == null || value.isEmpty();
     }
 
+    public static boolean isNull(String value) {
+        return value == null;
+    }
 
     public static byte[] decodeToBytes(String value) {
         return value == null ? null : Base64.getDecoder().decode(value);

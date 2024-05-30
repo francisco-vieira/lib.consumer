@@ -6,7 +6,7 @@
  */
 package br.margay.com.email.ipack;
 
-import br.margay.com.email.enums.RecipientType;
+import br.margay.com.enums.email.RecipientType;
 import br.margay.com.exception.CoreMailException;
 
 

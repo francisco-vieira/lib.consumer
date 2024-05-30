@@ -6,10 +6,11 @@
  */
 package br.margay.com.pix;
 
+import br.margay.com.enums.pix.PSPPix;
 import br.margay.com.ipack.IConfigPix;
 
 /**
- * @author colpv
+ * @author francisco.vieira
  * Criado em 27/05/2024
  */
 public class CConfigPix implements IConfigPix {
@@ -30,10 +31,12 @@ public class CConfigPix implements IConfigPix {
     private String developerApplicationKey;
     private String accountID;
 
+    private PSPPix pspPix;
+
     private CConfigPix() {
     }
 
-    public CConfigPix(String scopes, String chavePix, String clienteId, String clienteSecret, String certificado, String chavePrivada, String senha, String cnpj, String token, String developerApplicationKey, String accountID) {
+    public CConfigPix(String scopes, String chavePix, String clienteId, String clienteSecret, String certificado, String chavePrivada, String senha, String cnpj, String token, String developerApplicationKey, String accountID, PSPPix pspPix) {
         this.scopes = scopes;
         this.chavePix = chavePix;
         this.clienteId = clienteId;
@@ -45,6 +48,7 @@ public class CConfigPix implements IConfigPix {
         this.token = token;
         this.developerApplicationKey = developerApplicationKey;
         this.accountID = accountID;
+        this.pspPix = pspPix;
     }
 
 
@@ -136,6 +140,13 @@ public class CConfigPix implements IConfigPix {
         this.accountID = accountID;
     }
 
+    public PSPPix getPspPix() {
+        return pspPix;
+    }
+
+    public void setPspPix(PSPPix pspPix) {
+        this.pspPix = pspPix;
+    }
 
     public static Builder build(){
         return new Builder();
@@ -157,6 +168,8 @@ public class CConfigPix implements IConfigPix {
 
         private String developerApplicationKey;
         private String accountID;
+
+        private PSPPix pspPix;
 
         public Builder scopes(String scopes) {
             this.scopes = scopes;
@@ -213,6 +226,10 @@ public class CConfigPix implements IConfigPix {
             return this;
         }
 
+        public Builder psp(PSPPix psp) {
+            this.pspPix = psp;
+            return this;
+        }
 
         public CConfigPix build() {
             return new CConfigPix(scopes,
@@ -220,7 +237,7 @@ public class CConfigPix implements IConfigPix {
                     clienteSecret, certificado,
                     chavePrivada, senha, cnpj,
                     token, developerApplicationKey,
-                    accountID);
+                    accountID, pspPix);
         }
     }
 

@@ -7,8 +7,8 @@
 package br.margay.com.email.builder;
 
 
-import br.margay.com.email.enums.EConfig;
-import br.margay.com.email.enums.RecipientType;
+import br.margay.com.enums.email.EConfig;
+import br.margay.com.enums.email.RecipientType;
 import br.margay.com.email.ipack.Account;
 import br.margay.com.exception.CoreMailException;
 import br.margay.com.email.ipack.IBuilderMail;

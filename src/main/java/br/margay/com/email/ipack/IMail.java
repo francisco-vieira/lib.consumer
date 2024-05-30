@@ -1,7 +1,7 @@
 package br.margay.com.email.ipack;
 
 
-import br.margay.com.email.enums.RecipientType;
+import br.margay.com.enums.email.RecipientType;
 
 import java.io.Serializable;
 import java.util.Map;

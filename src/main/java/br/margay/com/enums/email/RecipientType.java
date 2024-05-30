@@ -4,7 +4,7 @@
  * emails: suporte@margay.com.br, contato@margay.com.br
  * celular: (93) 991663577
  */
-package br.margay.com.email.enums;
+package br.margay.com.enums.email;
 
 /**
  * @author colpv
