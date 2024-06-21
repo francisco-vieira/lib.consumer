@@ -13,16 +13,16 @@ import java.io.Serializable;
  * Criado em 22/05/2024
  */
 public class Calendario implements Serializable {
-    private int expiracao;
+    private long expiracao;
 
     public Calendario() {
     }
 
-    public Calendario(int expiracao) {
+    public Calendario(long expiracao) {
         this.expiracao = expiracao;
     }
 
-    public int getExpiracao() {
+    public long getExpiracao() {
         return expiracao;
     }
 

@@ -70,4 +70,33 @@ public class StringUtils {
         return new FileInputStream(temp);
     }
 
+    public static String stringToValuePix(String value) {
+        StringBuilder builder = new StringBuilder();
+        for (Character c : value.toCharArray()) {
+            if (Character.isDigit(c) || c == ',') {
+                if(c == ',' && !builder.toString().contains(".")){
+                    builder.append(".");
+                }else{
+                    builder.append(c);
+                }
+            }
+        }
+        return builder.toString();
+    }
+
+    public static String digitFilter(String str) {
+        if(str == null || str.isEmpty()){
+            return str;
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (Character c : str.toCharArray()) {
+            if (Character.isDigit(c)) {
+                builder.append(c);
+            }
+        }
+
+        return builder.toString();
+    }
+
 }

@@ -91,7 +91,7 @@ public class ProcessorUtil {
             BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
 
             ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
-            MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+            MatrixToImageWriter.writeToStream(bitMatrix,"PNG", pngOutputStream);
             return pngOutputStream.toByteArray();
         } catch (WriterException | IOException e) {
             throw new ServiceException(e);

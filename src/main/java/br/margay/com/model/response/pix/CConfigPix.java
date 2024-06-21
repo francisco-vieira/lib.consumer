@@ -4,7 +4,7 @@
  * emails: suporte@margay.com.br, contato@margay.com.br
  * celular: (93) 991663577
  */
-package br.margay.com.pix;
+package br.margay.com.model.response.pix;
 
 import br.margay.com.enums.pix.PSPPix;
 import br.margay.com.ipack.IConfigPix;

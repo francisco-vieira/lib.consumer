@@ -50,7 +50,7 @@ import java.util.Objects;
  */
 public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
 
-    private CloseableHttpClient http;
+    private final CloseableHttpClient http;
 
     protected HostBase hostBase;
     protected String strHostBase;
@@ -93,6 +93,7 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
             String password = storePix.getPassword();
             if (StringUtils.isNull(password)) {
                 password = "";
+                storePix.setPassword(password);
             }
 
             char[] pass = password.toCharArray();

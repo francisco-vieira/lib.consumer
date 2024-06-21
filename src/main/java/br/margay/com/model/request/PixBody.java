@@ -16,7 +16,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author colpv
+ * @author francisco.castro
  * Criado em 22/05/2024
  */
 public class PixBody implements Serializable {
