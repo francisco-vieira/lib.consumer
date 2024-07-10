@@ -15,12 +15,18 @@ import java.io.Serializable;
 public class Valor implements Serializable {
 
     private String original;
+    private String modalidadeAlteracao;
 
     public Valor() {
     }
 
     public Valor(String original) {
         this.original = original;
+    }
+
+    public Valor(String original, String modalidadeAlteracao) {
+        this.original = original;
+        this.modalidadeAlteracao = modalidadeAlteracao;
     }
 
     public String getOriginal() {
@@ -30,4 +36,13 @@ public class Valor implements Serializable {
     public void setOriginal(String original) {
         this.original = original;
     }
+
+    public String getModalidadeAlteracao() {
+        return modalidadeAlteracao;
+    }
+
+    public void setModalidadeAlteracao(String modalidadeAlteracao) {
+        this.modalidadeAlteracao = modalidadeAlteracao;
+    }
+
 }

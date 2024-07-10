@@ -7,9 +7,10 @@
 package br.margay.com.model.response;
 
 
-import br.margay.com.model.request.pix.Devedor;
+import br.margay.com.model.response.pix.Devedor;
 import br.margay.com.model.request.pix.InfoAdicional;
 import br.margay.com.model.request.pix.Valor;
+import br.margay.com.model.request.pix.config.efi.ConfiguracaoSplit;
 import br.margay.com.model.response.pix.Calendario;
 import br.margay.com.model.response.pix.Localidade;
 
@@ -35,6 +36,7 @@ public final class PixResponse implements Serializable {
     private int revisao;
     private String status;
     private List<InfoAdicional> infoAdicionais;
+    private ConfiguracaoSplit config;
 
     public PixResponse() {
     }
@@ -50,7 +52,8 @@ public final class PixResponse implements Serializable {
                        String txid,
                        int revisao,
                        String status,
-                       List<InfoAdicional> infoAdicionais) {
+                       List<InfoAdicional> infoAdicionais,
+                       ConfiguracaoSplit config) {
 
         this.calendario = calendario;
         this.devedor = devedor;
@@ -64,6 +67,7 @@ public final class PixResponse implements Serializable {
         this.revisao = revisao;
         this.status = status;
         this.infoAdicionais = infoAdicionais;
+        this.config = config;
     }
 
     public String getChave() {
@@ -162,6 +166,13 @@ public final class PixResponse implements Serializable {
         this.infoAdicionais = infoAdicionais;
     }
 
+    public ConfiguracaoSplit getConfig() {
+        return config;
+    }
+
+    public void setConfig(ConfiguracaoSplit config) {
+        this.config = config;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -180,6 +191,8 @@ public final class PixResponse implements Serializable {
         private int revisao;
         private String status;
         private List<InfoAdicional> infoAdicionais;
+
+        private ConfiguracaoSplit config;
 
         public Builder chave(String chave) {
             this.chave = chave;
@@ -241,6 +254,11 @@ public final class PixResponse implements Serializable {
             return this;
         }
 
+        public Builder config(ConfiguracaoSplit config) {
+            this.config = config;
+            return this;
+        }
+
         public PixResponse build() {
             return new PixResponse(calendario,
                     devedor,
@@ -253,7 +271,8 @@ public final class PixResponse implements Serializable {
                     txid,
                     revisao,
                     status,
-                    infoAdicionais);
+                    infoAdicionais,
+                    config);
         }
     }
 }

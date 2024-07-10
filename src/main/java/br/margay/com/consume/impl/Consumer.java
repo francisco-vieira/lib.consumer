@@ -6,7 +6,7 @@
  */
 package br.margay.com.consume.impl;
 
-import br.margay.com.consume.msg.Message;
+import br.margay.com.model.msg.Message;
 import br.margay.com.exception.ServiceException;
 import br.margay.com.enums.pix.CertificateType;
 import br.margay.com.enums.cnpj.HostBase;

@@ -1,5 +1,5 @@
 /*
- * Margay Sistema 2022
+ * Margay Sistema 2024
  */
 package br.margay.com.consume;
 
@@ -14,7 +14,6 @@ import br.margay.com.util.StringUtils;
 import com.google.api.client.util.Strings;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
@@ -57,7 +56,6 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
     protected Map<String, String> headers;
 
     private static final String AUTHORIZATION = "Authorization";
-
 
     public ConsumerAbs() {
         http = HttpClients.createDefault();
@@ -126,7 +124,6 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
 
     public abstract void error(String error);
 
-
     @Override
     public String get(String endpoint, Map<String, String> params) throws ServiceException {
 
@@ -154,7 +151,6 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
         return get("", params);
     }
 
-
     public String get(String endpoint) throws ServiceException {
         return this.get(endpoint, new HashMap<>());
     }
@@ -175,7 +171,6 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
         return this.post(endpoint, json, params, ContentType.APPLICATION_JSON);
     }
 
-    HttpHeaders headers1;
     @Override
     public String post(String endpoint, String json, Map<String, String> params, ContentType type) throws ServiceException {
 
@@ -207,11 +202,9 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
         }
     }
 
-
     public Boolean delete(String endpoint) throws ServiceException {
         return this.delete(endpoint, new HashMap<>());
     }
-
 
     public Boolean delete(String endpoint, Map<String, String> params) throws ServiceException {
         try {
@@ -278,7 +271,6 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
         return builder.build();
     }
 
-
     private String withBar(String endpoint) {
 
         String url = urlBase();
@@ -293,12 +285,10 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
         return urlBase().concat(endpoint);
     }
 
-
     @Override
     public byte[] gerarQrCode(String text, int width, int heigth) throws ServiceException {
         return ProcessorUtil.generateQrCode(text, width, heigth);
     }
-
 
     @Override
     public void gerarQrCodeImage(String text, int width, int height, String filePath) throws ServiceException {

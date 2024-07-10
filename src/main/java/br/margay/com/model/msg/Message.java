@@ -4,7 +4,7 @@
  * emails: suporte@margay.com.br, contato@margay.com.br
  * celular: (93) 991663577
  */
-package br.margay.com.consume.msg;
+package br.margay.com.model.msg;
 
 import java.io.Serializable;
 

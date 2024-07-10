@@ -13,7 +13,7 @@ import br.margay.com.ipack.IConfigPix;
  * @author francisco.vieira
  * Criado em 27/05/2024
  */
-public class CConfigPix implements IConfigPix {
+public class PConfigPix implements IConfigPix {
 
     private String scopes;
     private String chavePix;
@@ -33,10 +33,12 @@ public class CConfigPix implements IConfigPix {
 
     private PSPPix pspPix;
 
-    private CConfigPix() {
+    private PConfigPix() {
     }
 
-    public CConfigPix(String scopes, String chavePix, String clienteId, String clienteSecret, String certificado, String chavePrivada, String senha, String cnpj, String token, String developerApplicationKey, String accountID, PSPPix pspPix) {
+    public PConfigPix(String scopes, String chavePix, String clienteId, String clienteSecret,
+                      String certificado, String chavePrivada, String senha, String cnpj,
+                      String token, String developerApplicationKey, String accountID, PSPPix pspPix) {
         this.scopes = scopes;
         this.chavePix = chavePix;
         this.clienteId = clienteId;
@@ -231,8 +233,8 @@ public class CConfigPix implements IConfigPix {
             return this;
         }
 
-        public CConfigPix build() {
-            return new CConfigPix(scopes,
+        public PConfigPix build() {
+            return new PConfigPix(scopes,
                     chavePix, clienteId,
                     clienteSecret, certificado,
                     chavePrivada, senha, cnpj,

@@ -19,4 +19,20 @@ public class Converters {
         }
         return clazz.cast(object);
     }
+
+
+    public static String charsToString(char[] chars){
+        if (chars == null || chars.length == 0){
+            return "";
+        }
+        return new String(chars);
+    }
+
+    public static char[] stringToChars(String string){
+        if (string == null || string.isEmpty()){
+            return new char[0];
+        }
+        return string.toCharArray();
+    }
+
 }

@@ -20,7 +20,7 @@ import java.security.cert.CertificateException;
 import java.util.Base64;
 
 /**
- * @author colpv
+ * @author francisco.vieira
  * Criado em 24/05/2024
  */
 public class StringUtils {
@@ -29,10 +29,20 @@ public class StringUtils {
         return value != null && !value.isEmpty();
     }
 
+    /**
+     *  Method verifica se o valor eh null ou vazio
+     * @param value valor a verificada
+     * @return string verificada
+     */
     public static boolean isEmpty(String value) {
         return value == null || value.isEmpty();
     }
 
+    /**
+     *  Method verifica se o valor eh null
+     * @param value valor a verificada
+     * @return string verificada
+     */
     public static boolean isNull(String value) {
         return value == null;
     }
