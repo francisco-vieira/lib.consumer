@@ -12,6 +12,7 @@ package br.margay.com.consume.auth;
  */
 public enum AuthorizationType {
 
+    TOKEN_NONE(""),
     TOKEN_BEARER("Bearer "),
     TOKEN_BASIC("Basic ");
 
