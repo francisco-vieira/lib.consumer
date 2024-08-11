@@ -6,6 +6,8 @@
  */
 package br.margay.com.enums.pix;
 
+import br.margay.com.exception.ServiceException;
+
 /**
  * @author francisco.vieira
  * Criado em 29/05/2024
@@ -45,9 +47,8 @@ public enum PSPPix {
     public static PSPPix getValueOf(Object object) {
         for (PSPPix e : PSPPix.values()) {
             if ((object instanceof String || object instanceof PSPPix) && object.equals(e.toString())) {
-                    return e;
-                }
-
+                return e;
+            }
 
             if (object instanceof Integer) {
                 Integer code = Integer.valueOf(object.toString());
@@ -65,31 +66,34 @@ public enum PSPPix {
         return codigo;
     }
 
-    public String getProducao() {
-        return producao;
-    }
-
-    public String getHomologacao() {
-        return homologacao;
-    }
-
-    public String getTeste() {
-        return teste;
-    }
-
     /**
-     *
-     * @param code recebe 1 teste, 2 homologacao, 3 producao
+     * @param code recebe 1 ou test para TESTE , 2 ou hml para homologacao, 3 ou prd para producao
      * @return host do ambiente
      */
-    public String getAmbiente(int code) {
-        if (code == 1) {
-            return this.teste;
-        } else if (code == 2) {
-            return this.homologacao;
-        } else {
-            return this.producao;
+    public String getAmbiente(Object code) {
+        String ambiente = String.valueOf(code);
+
+        if (code instanceof Integer) {
+            int cod = Integer.parseInt(ambiente);
+            if (cod == 1) {
+                return this.teste;
+            } else if (cod == 2) {
+                return this.homologacao;
+            } else if (cod == 3) {
+                return this.producao;
+            }
         }
+
+        if (code instanceof String) {
+            if ("test".equalsIgnoreCase(ambiente)) {
+                return this.teste;
+            } else if ("hml".equalsIgnoreCase(ambiente)) {
+                return this.homologacao;
+            } else if ("prd".equalsIgnoreCase(ambiente)) {
+                return this.producao;
+            }
+        }
+        throw new ServiceException("Ambiente não suportado");
     }
 
     @Override

@@ -28,7 +28,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -105,7 +105,7 @@ public class ProcessorUtil {
 
     public static Map<PSPPix, KeyStorePix> loadKeyStore(String certif, String senha, CertificateType certificateType, PSPPix psp) throws ServiceException {
 
-        Map<PSPPix, KeyStorePix> keyStoreMap = new HashMap<>();
+        Map<PSPPix, KeyStorePix> keyStoreMap = new EnumMap<>(PSPPix.class);
         char[] password = senha.toCharArray();
 
         File file = new File(certif);
@@ -125,10 +125,8 @@ public class ProcessorUtil {
             keyStoreMap.put(psp, pix);
             return keyStoreMap;
 
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             throw new ServiceException(ex);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
 
     }

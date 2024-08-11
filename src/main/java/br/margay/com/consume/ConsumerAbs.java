@@ -54,15 +54,17 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
     protected HostBase hostBase;
     protected String strHostBase;
     protected Map<String, String> headers;
+    private String prefixo;
+    private String sufixo;
 
     private static final String AUTHORIZATION = "Authorization";
 
-    public ConsumerAbs() {
+    protected ConsumerAbs() {
         http = HttpClients.createDefault();
         this.headers = new HashMap<>();
     }
 
-    public ConsumerAbs(String path, String password, CertificateType certf) throws ServiceException {
+    protected ConsumerAbs(String path, String password, CertificateType certf) throws ServiceException {
         try {
             this.headers = new HashMap<>();
             char[] pass = password.toCharArray();
@@ -84,7 +86,7 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
         }
     }
 
-    public ConsumerAbs(KeyStorePix storePix) throws ServiceException {
+    protected ConsumerAbs(KeyStorePix storePix) throws ServiceException {
         try {
             this.headers = new HashMap<>();
 
@@ -125,14 +127,20 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
     public abstract void error(String error);
 
     @Override
+    public void setKeyPref(String prefixo, String sufixo) throws ServiceException {
+        this.prefixo = prefixo;
+        this.sufixo = sufixo;
+    }
+
+    @Override
     public String get(String endpoint, Map<String, String> params) throws ServiceException {
 
         try {
-
+            validaPref();
             HttpGet httpGet = new HttpGet(withBar(endpoint));
             httpGet.setConfig(requestConfig());
             headers().forEach(httpGet::setHeader);
-            httpGet.setHeader(AUTHORIZATION, AuthorizationToken.getTokenAuthorization());
+            httpGet.setHeader(AUTHORIZATION, AuthorizationToken.getTokenAuthorization(prefixo, sufixo));
 
             URI uri = loadParams(params, httpGet.getURI());
             httpGet.setURI(uri);
@@ -187,7 +195,7 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
                 response.getStatusLine().getStatusCode();
                 HttpEntity entity = response.getEntity();
                 for (Header r : response.getHeaders(AUTHORIZATION)) {
-                    AuthorizationToken.authorization(r.getValue());
+                    AuthorizationToken.authorization(r.getValue(), prefixo, sufixo);
                 }
                 return entity != null ? EntityUtils.toString(entity) : null;
             };
@@ -208,8 +216,9 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
 
     public Boolean delete(String endpoint, Map<String, String> params) throws ServiceException {
         try {
+            validaPref();
             HttpDelete httpDelete = new HttpDelete(withBar(endpoint));
-            httpDelete.setHeader(AUTHORIZATION, AuthorizationToken.getTokenAuthorization());
+            httpDelete.setHeader(AUTHORIZATION, AuthorizationToken.getTokenAuthorization(prefixo, sufixo));
             httpDelete.setConfig(requestConfig());
 
             URI uri = loadParams(params, httpDelete.getURI());
@@ -245,7 +254,7 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
             ResponseHandler<String> handler = getStringResponseHandler();
             error(this.http.execute(httpPost, handler));
 
-        } catch (Exception e) {
+        } catch (IOException | URISyntaxException e) {
             ProcessorUtil.writeLogger(ConsumerAbs.class).severe(e.toString());
             throw new ServiceException(e);
         }
@@ -253,10 +262,11 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
     }
 
     private HttpPost getHttpPost(String endpoint, Map<String, String> params) throws URISyntaxException {
+        validaPref();
         HttpPost httpPost = new HttpPost(withBar(endpoint));
         httpPost.setConfig(requestConfig());
         if (AuthorizationToken.isTokenValid()) {
-            httpPost.setHeader(AUTHORIZATION, AuthorizationToken.getTokenAuthorization());
+            httpPost.setHeader(AUTHORIZATION, AuthorizationToken.getTokenAuthorization(prefixo, sufixo));
         }
         URI uri = loadParams(params, httpPost.getURI());
         httpPost.setURI(uri);
@@ -297,7 +307,13 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
 
     @Override
     public void gerarQrCodeImage(String text, int width, int height) throws ServiceException {
-        gerarQrCodeImage(text, width,height, "qrcode.png");
+        gerarQrCodeImage(text, width, height, "qrcode.png");
+    }
+
+    private void validaPref() {
+        if (StringUtils.isEmpty(prefixo) && StringUtils.isEmpty(sufixo)) {
+            throw new ServiceException("Prefixo e sufixo são obrigatórios.\nPasse esses valores no method: setKeyPref");
+        }
     }
 
 }
