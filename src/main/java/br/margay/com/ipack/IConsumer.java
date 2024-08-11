@@ -49,6 +49,4 @@ public interface IConsumer<T> {
 
     void gerarQrCodeImage(String text, int width, int height) throws ServiceException;
 
-    void setKeyPref(String prefixo, String sufixo) throws ServiceException;
-
 }
