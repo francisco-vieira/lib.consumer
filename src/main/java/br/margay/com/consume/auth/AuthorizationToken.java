@@ -23,7 +23,6 @@ public class AuthorizationToken {
             Preferences prefs = Preferences.userNodeForPackage(AuthorizationToken.class);
             prefs.put(keyPref(), getToken());
         }
-
     }
 
     /**
@@ -36,6 +35,7 @@ public class AuthorizationToken {
         AuthorizationToken.token = token;
         tokenType = AuthorizationType.TOKEN_BEARER;
         new AuthorizationToken(AuthorizationToken.token);
+        tokenType = AuthorizationType.TOKEN_NONE;
     }
 
     /**
@@ -55,7 +55,8 @@ public class AuthorizationToken {
                 String auth = username + ":" + password;
                 AuthorizationToken.token = DatatypeConverter.printBase64Binary(auth.getBytes(StandardCharsets.UTF_8));
                 tokenType = AuthorizationType.TOKEN_BASIC;
-                    new AuthorizationToken(AuthorizationToken.token);
+                new AuthorizationToken(AuthorizationToken.token);
+                tokenType = AuthorizationType.TOKEN_NONE;
             } catch (Exception e) {
                 throw new ServiceException(e.getMessage());
             }
