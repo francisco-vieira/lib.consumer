@@ -14,12 +14,12 @@ public class AuthorizationToken {
 
     private static String token;
     private static AuthorizationType tokenType;
-    private static final long TOKEN_EXPIRATION_TIME = 30L * 60L * 1000L;
+    private static long expirationTime;
     private static long tokenExpirationTime;
 
     public AuthorizationToken(String token) {
 
-        if (!Strings.isNullOrEmpty(token) && tokenType == AuthorizationType.TOKEN_BEARER) {
+        if (!Strings.isNullOrEmpty(token) && tokenType != AuthorizationType.TOKEN_BASIC) {
             Preferences prefs = Preferences.userNodeForPackage(AuthorizationToken.class);
             if (!token.contains(tokenType.toString())) {
                 token = tokenType.toString().concat(token);
@@ -34,7 +34,10 @@ public class AuthorizationToken {
      * @param token basic or bearer conforme necessario
      */
     public static void authorization(String token) {
-        AuthorizationToken.tokenExpirationTime = System.currentTimeMillis() + TOKEN_EXPIRATION_TIME;
+        if (expirationTime == 0) {
+            expirationTime = 30L * 60L * 1000L;
+        }
+        AuthorizationToken.tokenExpirationTime = System.currentTimeMillis() + expirationTime;
         AuthorizationToken.token = token;
         tokenType = AuthorizationType.TOKEN_BEARER;
         new AuthorizationToken(AuthorizationToken.token);
@@ -95,6 +98,10 @@ public class AuthorizationToken {
 
     public static synchronized boolean isTokenValidBearer() {
         return (token != null && System.currentTimeMillis() <= tokenExpirationTime);
+    }
+
+    public static void expirationTime(long expirationTime) {
+        AuthorizationToken.expirationTime = expirationTime;
     }
 
 }
