@@ -1,7 +1,6 @@
 package br.margay.com.consume.auth;
 
 import br.margay.com.exception.ServiceException;
-import br.margay.com.util.StringUtils;
 import com.google.common.base.Strings;
 
 import javax.xml.bind.DatatypeConverter;
@@ -17,17 +16,12 @@ public class AuthorizationToken {
     private static AuthorizationType tokenType;
     private static final long TOKEN_EXPIRATION_TIME = 30L * 60L * 1000L;
     private static long tokenExpirationTime;
-    private static String prefixo;
-    private static String sufixo;
 
-    public AuthorizationToken(String prefixo, String sufixo, String token) {
-        if (StringUtils.isEmpty(prefixo) && StringUtils.isEmpty(sufixo)) {
-            throw new ServiceException("Prefixo e sufixo são obrigatórios");
-        }
+    public AuthorizationToken(String token) {
 
         if (!Strings.isNullOrEmpty(token) && tokenType == AuthorizationType.TOKEN_BEARER) {
             Preferences prefs = Preferences.userNodeForPackage(AuthorizationToken.class);
-            prefs.put(keyPref(prefixo, sufixo), getToken());
+            prefs.put(keyPref(), getToken());
         }
 
     }
@@ -38,11 +32,10 @@ public class AuthorizationToken {
      * @param token basic or bearer conforme necessario
      */
     public static void authorization(String token) {
-
         AuthorizationToken.tokenExpirationTime = System.currentTimeMillis() + TOKEN_EXPIRATION_TIME;
         AuthorizationToken.token = token;
         tokenType = AuthorizationType.TOKEN_BEARER;
-        new AuthorizationToken(AuthorizationToken.prefixo, AuthorizationToken.sufixo, AuthorizationToken.token);
+        new AuthorizationToken(AuthorizationToken.token);
     }
 
     /**
@@ -50,10 +43,8 @@ public class AuthorizationToken {
      *
      * @param username nome do usuario
      * @param password senha do usuario
-     * @param prefixo  valor inicial para gerar chave
-     * @param sufixo   valor final para gerar chave
      */
-    public static void authorization(String username, String password, String prefixo, String sufixo) {
+    public static void authorization(String username, String password) {
         if (!isTokenValid()) {
             try {
 
@@ -64,9 +55,7 @@ public class AuthorizationToken {
                 String auth = username + ":" + password;
                 AuthorizationToken.token = DatatypeConverter.printBase64Binary(auth.getBytes(StandardCharsets.UTF_8));
                 tokenType = AuthorizationType.TOKEN_BASIC;
-                AuthorizationToken.prefixo = prefixo;
-                AuthorizationToken.sufixo = sufixo;
-                new AuthorizationToken(AuthorizationToken.prefixo, AuthorizationToken.sufixo, AuthorizationToken.token);
+                    new AuthorizationToken(AuthorizationToken.token);
             } catch (Exception e) {
                 throw new ServiceException(e.getMessage());
             }
@@ -74,9 +63,9 @@ public class AuthorizationToken {
         }
     }
 
-    public void reset(String prefixo, String sufixo) {
+    public void reset() {
         Preferences prefs = Preferences.userNodeForPackage(AuthorizationToken.class);
-        prefs.remove(keyPref(prefixo, sufixo));
+        prefs.remove(keyPref());
     }
 
     public static String getTokenAuthorization() {
@@ -90,11 +79,11 @@ public class AuthorizationToken {
         }
 
         Preferences prefs = Preferences.userNodeForPackage(AuthorizationToken.class);
-        return prefs.get(keyPref(prefixo, sufixo), null);
+        return prefs.get(keyPref(), null);
     }
 
-    private static String keyPref(String prefixo, String sufixo) {
-        return String.format("%s.%s", prefixo, sufixo);
+    private static String keyPref() {
+        return String.format("%s.TOKEN", tokenType);
     }
 
     public static synchronized boolean isTokenValid() {
