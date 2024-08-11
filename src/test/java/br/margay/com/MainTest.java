@@ -60,9 +60,6 @@ class MainTest {
             .psp(PSPPix.EFI)
             .build();
 
-    private static final String SUFIXO = "HOMOLOGACAO";
-    private static final String PREFIXO = PSPPix.EFI.name();
-
     private final String tokenSicoob = "1301865f-c6bc-38f3-9f49-666dbcfc59c3";
     private final String clientIdSicoob = "9b5e603e428cc477a2841e2683c92d21";
 
@@ -95,7 +92,7 @@ class MainTest {
     @Test
     void requestSicoobPixGET() {
 
-        AuthorizationToken.authorization(PREFIXO, SUFIXO, tokenSicoob);
+        AuthorizationToken.authorization(tokenSicoob);
         Map<String, String> parans = new HashMap<>();
         parans.put("revisao", "978805810");
 
@@ -113,7 +110,7 @@ class MainTest {
     @Test
 //    SICOOB
     void requestSicoobPixPOST() {
-        AuthorizationToken.authorization(PREFIXO, SUFIXO, tokenSicoob);
+        AuthorizationToken.authorization(tokenSicoob);
         Consumer c = Consumer.getInstance();
         c.header("client_id", clientIdSicoob);
         c.header("Accept", "application/json");
@@ -139,7 +136,7 @@ class MainTest {
     @Test
     void requestEfiPixGet() {
 
-        AuthorizationToken.authorization(PREFIXO, SUFIXO, configPix.getToken());
+        AuthorizationToken.authorization(configPix.getToken());
         Consumer c = Consumer.getInstance(configPix.getCertificado(), CertificateType.PKCS_12);
         c.header("scope", configPix.getScopes());
         c.setBase(configPix.getPspPix().getAmbiente(2));
@@ -152,7 +149,7 @@ class MainTest {
     @Test
     void requestEfiPixPOST() {
 
-        AuthorizationToken.authorization(PREFIXO, SUFIXO, configPix.getToken());
+        AuthorizationToken.authorization(configPix.getToken());
 
         Consumer c = Consumer.getInstance(configPix.getCertificado(), CertificateType.PKCS_12);
         c.header("scope", configPix.getScopes());
@@ -183,10 +180,10 @@ class MainTest {
     @Test
     void requestEfiAuthorization() {
 
-        AuthorizationToken.authorization(configPix.getClienteId(), configPix.getClienteSecret(), configPix.getPspPix().name(), PREFIXO);
+        AuthorizationToken.authorization(configPix.getClienteId(), configPix.getClienteSecret());
 
         Consumer c = Consumer.getInstance(configPix.getCertificado(), CertificateType.PKCS_12);
-        c.setKeyPref(PREFIXO, SUFIXO);
+
         c.setBase(configPix.getPspPix().getAmbiente(2));
 
         String json = g.toJson(new GrantType("client_credentials"));
@@ -219,7 +216,7 @@ class MainTest {
     @Test
     void processCertificadoTest() throws Exception {
 
-        AuthorizationToken.authorization(configPix.getClienteId(), configPix.getClienteSecret(), PREFIXO, SUFIXO);
+        AuthorizationToken.authorization(configPix.getClienteId(), configPix.getClienteSecret());
 
         PSPPix pspPix = PSPPix.EFI;
         Map<PSPPix, KeyStorePix> result = ProcessorUtil.loadKeyStore(configPix.getCertificado(), CertificateType.PKCS_12, pspPix);
@@ -228,7 +225,6 @@ class MainTest {
 
         Consumer c = Consumer.getInstance(storePix);
 
-        c.setKeyPref(PREFIXO, SUFIXO);
         c.setBase(pspPix.getAmbiente(2));
 
         String json = g.toJson(new GrantType("client_credentials"));
@@ -248,7 +244,7 @@ class MainTest {
     @Test
     void configuracaoSplitPixEfi() throws Exception {
 
-        AuthorizationToken.authorization(configPix.getToken(), PREFIXO, SUFIXO);
+        AuthorizationToken.authorization(configPix.getToken());
 
         Consumer c = Consumer.getInstance(configPix.getCertificado(), CertificateType.PKCS_12);
         c.header("scope", "gn.split.write");
