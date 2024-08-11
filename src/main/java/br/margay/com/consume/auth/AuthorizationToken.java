@@ -28,9 +28,7 @@ public class AuthorizationToken {
 
         if (!Strings.isNullOrEmpty(token)) {
             Preferences prefs = Preferences.userNodeForPackage(AuthorizationToken.class);
-            if(Objects.equals(tokenType , AuthorizationType.TOKEN_BEARER)) {
-                prefs.put(keyPref(prefixo, sufixo), token);
-            }
+                prefs.put(keyPref(prefixo, sufixo), getToken());
         }
     }
 
@@ -41,9 +39,10 @@ public class AuthorizationToken {
      * @param token basic or bearer conforme necessario
      */
     public static void authorization(String prefixo, String sufixo, String token) {
-        tokenType = AuthorizationType.TOKEN_BEARER;
+
         AuthorizationToken.tokenExpirationTime = System.currentTimeMillis() + TOKEN_EXPIRATION_TIME;
-        AuthorizationToken.token = getKey().concat(token);
+        AuthorizationToken.token = token;
+        tokenType = AuthorizationType.TOKEN_BEARER;
         new AuthorizationToken(prefixo, sufixo, AuthorizationToken.token);
     }
 
@@ -57,15 +56,15 @@ public class AuthorizationToken {
     public static void authorization(String username, String password, String prefixo, String sufixo) {
         if (!isTokenValid()) {
             try {
-
+                AuthorizationToken.tokenExpirationTime = System.currentTimeMillis() + TOKEN_EXPIRATION_TIME;
                 if (Strings.isNullOrEmpty(username) || Strings.isNullOrEmpty(password)) {
                     throw new ServiceException("Username or password should not be null or empty");
                 }
 
                 String auth = username + ":" + password;
-                token = DatatypeConverter.printBase64Binary(auth.getBytes(StandardCharsets.UTF_8));
+                AuthorizationToken.token  = DatatypeConverter.printBase64Binary(auth.getBytes(StandardCharsets.UTF_8));
                 tokenType = AuthorizationType.TOKEN_BASIC;
-                authorization(prefixo, sufixo, token);
+                new AuthorizationToken(prefixo, sufixo, AuthorizationToken.token );
             } catch (Exception e) {
                 throw new ServiceException(e.getMessage());
             }
@@ -83,7 +82,7 @@ public class AuthorizationToken {
             return null;
         }
         Preferences prefs = Preferences.userNodeForPackage(AuthorizationToken.class);
-        return prefs.get( keyPref(prefixo, sufixo), null);
+        return prefs.get(keyPref(prefixo, sufixo), null);
     }
 
     private static String keyPref(String prefixo, String sufixo) {
@@ -94,8 +93,8 @@ public class AuthorizationToken {
         return token != null && System.currentTimeMillis() <= tokenExpirationTime;
     }
 
-    public static String getKey(){
-       return tokenType.toString();
+    public static String getToken(){
+       return tokenType.toString().concat(token);
     }
 
 }

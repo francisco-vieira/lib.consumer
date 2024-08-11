@@ -265,6 +265,7 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
         validaPref();
         HttpPost httpPost = new HttpPost(withBar(endpoint));
         httpPost.setConfig(requestConfig());
+
         if (AuthorizationToken.isTokenValid()) {
             httpPost.setHeader(AUTHORIZATION, AuthorizationToken.getTokenAuthorization(prefixo, sufixo));
         }
