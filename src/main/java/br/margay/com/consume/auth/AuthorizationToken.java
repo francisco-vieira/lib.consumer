@@ -6,6 +6,7 @@ import com.google.common.base.Strings;
 
 import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.prefs.Preferences;
 
 /**
@@ -27,7 +28,9 @@ public class AuthorizationToken {
 
         if (!Strings.isNullOrEmpty(token)) {
             Preferences prefs = Preferences.userNodeForPackage(AuthorizationToken.class);
-            prefs.put(keyPref(prefixo, sufixo), token);
+            if(Objects.equals(tokenType , AuthorizationType.TOKEN_BEARER)) {
+                prefs.put(keyPref(prefixo, sufixo), token);
+            }
         }
     }
 
