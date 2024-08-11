@@ -35,7 +35,7 @@ public class AuthorizationToken {
      */
     public static void authorization(String token) {
         if (expirationTime == 0) {
-            expirationTime = 30L * 60L * 1000L;
+            expirationTime = 60L * 60L * 1000L;
         }
         AuthorizationToken.tokenExpirationTime = System.currentTimeMillis() + expirationTime;
         AuthorizationToken.token = token;
@@ -79,7 +79,7 @@ public class AuthorizationToken {
             return tokenType.toString().concat(token);
         }
 
-        if (token == null || System.currentTimeMillis() > tokenExpirationTime) {
+        if (token == null || System.currentTimeMillis() >= tokenExpirationTime) {
             return null;
         }
 
@@ -101,7 +101,7 @@ public class AuthorizationToken {
     }
 
     public static void expirationTime(long expirationTime) {
-        AuthorizationToken.expirationTime = expirationTime;
+        AuthorizationToken.expirationTime =  expirationTime * 1000L;
     }
 
 }
