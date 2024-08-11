@@ -21,7 +21,10 @@ public class AuthorizationToken {
 
         if (!Strings.isNullOrEmpty(token) && tokenType == AuthorizationType.TOKEN_BEARER) {
             Preferences prefs = Preferences.userNodeForPackage(AuthorizationToken.class);
-            prefs.put(keyPref(), getToken());
+            if (!token.contains(tokenType.toString())) {
+                token = tokenType.toString().concat(token);
+            }
+            prefs.put(keyPref(), token);
         }
     }
 
@@ -35,7 +38,6 @@ public class AuthorizationToken {
         AuthorizationToken.token = token;
         tokenType = AuthorizationType.TOKEN_BEARER;
         new AuthorizationToken(AuthorizationToken.token);
-        tokenType = AuthorizationType.TOKEN_NONE;
     }
 
     /**
@@ -56,7 +58,6 @@ public class AuthorizationToken {
                 AuthorizationToken.token = DatatypeConverter.printBase64Binary(auth.getBytes(StandardCharsets.UTF_8));
                 tokenType = AuthorizationType.TOKEN_BASIC;
                 new AuthorizationToken(AuthorizationToken.token);
-                tokenType = AuthorizationType.TOKEN_NONE;
             } catch (Exception e) {
                 throw new ServiceException(e.getMessage());
             }
@@ -72,7 +73,7 @@ public class AuthorizationToken {
     public static String getTokenAuthorization() {
 
         if (tokenType == AuthorizationType.TOKEN_BASIC) {
-            return getToken();
+            return tokenType.toString().concat(token);
         }
 
         if (token == null || System.currentTimeMillis() > tokenExpirationTime) {
@@ -84,7 +85,7 @@ public class AuthorizationToken {
     }
 
     private static String keyPref() {
-        return String.format("%s.TOKEN", tokenType);
+        return AuthorizationType.TOKEN_BEARER.name();
     }
 
     public static synchronized boolean isTokenValid() {
@@ -92,8 +93,8 @@ public class AuthorizationToken {
                 || tokenType == AuthorizationType.TOKEN_BASIC;
     }
 
-    public static String getToken() {
-        return tokenType.toString().concat(token);
+    public static synchronized boolean isTokenValidBearer() {
+        return (token != null && System.currentTimeMillis() <= tokenExpirationTime);
     }
 
 }
