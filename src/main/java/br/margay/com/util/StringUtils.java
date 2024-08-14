@@ -25,6 +25,10 @@ import java.util.Base64;
  */
 public class StringUtils {
 
+    private StringUtils() {
+        super();
+    }
+
     public static boolean isNotEmpty(String value) {
         return value != null && !value.isEmpty();
     }
@@ -81,17 +85,82 @@ public class StringUtils {
     }
 
     public static String stringToValuePix(String value) {
+
         StringBuilder builder = new StringBuilder();
+        value = stringValidate(value);
+        pointFilter(value, builder);
+        value = builder.toString();
+
+        String[] split = value.split("\\.");
+
+        int length = 1;
+        String prefix = split[0];
+        prefix = prefix.length() == length ? "0".concat(prefix) : prefix;
+
+        int count = removeZero(prefix);
+
+        if (count > 2) {
+            prefix = prefix.substring(count-1);
+        }
+
+        if(prefix.isEmpty()){
+            prefix = "00";
+        }
+
+        String sufix;
+        if (split.length > 1) {
+            sufix = split[1];
+            sufix = sufix.length() == length ? "0".concat(sufix) : sufix;
+        } else {
+            sufix = "00";
+        }
+
+        return prefix + ".".concat(sufix);
+    }
+
+    private static void pointFilter(String value, StringBuilder builder) {
         for (Character c : value.toCharArray()) {
-            if (Character.isDigit(c) || c == ',') {
-                if(c == ',' && !builder.toString().contains(".")){
+            if (Character.isDigit(c) || (c == '.' || c == ',')) {
+                boolean not = !builder.toString().contains(".");
+                if ((c == ',' && not)) {
                     builder.append(".");
-                }else{
+                } else {
                     builder.append(c);
                 }
             }
         }
-        return builder.toString();
+    }
+
+    private static int removeZero(String prefix) {
+        int count = 1;
+        StringBuilder motege = new StringBuilder();
+        for (char c : prefix.toCharArray()) {
+            if (prefix.startsWith("0")) {
+                motege.append(c);
+                String str = motege.toString();
+                int len = str.length();
+                String zero = str.substring(len-1, len);
+                if (zero.equals("0")) {
+                    count++;
+                } else {
+                    break;
+                }
+            }
+        }
+        return count;
+    }
+
+    private static String stringValidate(String value) {
+        if (isNotEmpty(value)) {
+            value = value.trim();
+            if (value.contains(",") && value.contains(".")) {
+                return value.replace(".", "");
+            }
+
+        } else {
+            return "00";
+        }
+        return value;
     }
 
     public static String digitFilter(String str) {
