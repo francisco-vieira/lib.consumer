@@ -34,7 +34,8 @@ public class StringUtils {
     }
 
     /**
-     *  Method verifica se o valor eh null ou vazio
+     * Method verifica se o valor eh null ou vazio
+     *
      * @param value valor a verificada
      * @return string verificada
      */
@@ -43,7 +44,8 @@ public class StringUtils {
     }
 
     /**
-     *  Method verifica se o valor eh null
+     * Method verifica se o valor eh null
+     *
      * @param value valor a verificada
      * @return string verificada
      */
@@ -94,22 +96,22 @@ public class StringUtils {
         String[] split = value.split("\\.");
 
         int length = 1;
-        String prefix = split[0];
+        String prefix = split[length - 1];
         prefix = prefix.length() == length ? "0".concat(prefix) : prefix;
 
         int count = removeZero(prefix);
 
         if (count > 2) {
-            prefix = prefix.substring(count-1);
+            prefix = prefix.substring(count - length);
         }
 
-        if(prefix.isEmpty()){
+        if (prefix.isEmpty()) {
             prefix = "00";
         }
 
         String sufix;
-        if (split.length > 1) {
-            sufix = split[1];
+        if (split.length > length) {
+            sufix = split[length];
             sufix = sufix.length() == length ? "0".concat(sufix) : sufix;
         } else {
             sufix = "00";
@@ -139,7 +141,7 @@ public class StringUtils {
                 motege.append(c);
                 String str = motege.toString();
                 int len = str.length();
-                String zero = str.substring(len-1, len);
+                String zero = str.substring(len - 1, len);
                 if (zero.equals("0")) {
                     count++;
                 } else {
@@ -163,19 +165,91 @@ public class StringUtils {
         return value;
     }
 
-    public static String digitFilter(String str) {
-        if(str == null || str.isEmpty()){
+    /**
+     *
+     * @param str String que recebe filtro
+     * @param filter valor passado como filtro (alp, ALPHABETIC ou 1 para letras, dig, DIGIT ou 2 para números)
+     *               <br/>Valor null vai considerar letras.
+     * @return String com valor filtrado.
+     */
+    public static String stringFilter(String str, Object filter) {
+
+        if (str == null || str.isEmpty()) {
             return str;
+        }
+
+        Filter finder;
+
+        if (filter == null) {
+            finder = Filter.ALPHABETIC;
+        }else{
+            finder = Filter.finder(filter);
         }
 
         StringBuilder builder = new StringBuilder();
         for (Character c : str.toCharArray()) {
-            if (Character.isDigit(c)) {
+
+            if (finder == Filter.DIGIT && Character.isDigit(c)) {
                 builder.append(c);
             }
+
+            if (finder == Filter.ALPHABETIC && Character.isAlphabetic(c)) {
+                builder.append(c);
+            }
+
+
         }
 
         return builder.toString();
     }
 
+   public enum Filter {
+
+        ALPHABETIC(1,"alp"),
+        DIGIT(2, "dig");
+
+        private final int vInt;
+        private final String vString;
+
+        Filter(int vInt, String vString) {
+            this.vInt = vInt;
+            this.vString = vString;
+        }
+
+        public int getvInt() {
+            return vInt;
+        }
+
+        public String getvString() {
+            return vString;
+        }
+
+       public static Filter finder(Object object) {
+           String r = String.valueOf(object);
+           for (Filter filter : values()) {
+
+               if (object instanceof Filter) {
+                   Filter conv = Converters.objectToClass(object, Filter.class);
+                   if (filter == conv) {
+                       return filter;
+                   }
+               }
+
+               if (object instanceof String &&
+                       (r.equalsIgnoreCase(filter.getvString()) ||
+                               r.equalsIgnoreCase(filter.name()))) {
+                   return filter;
+               }
+
+               if (object instanceof Integer) {
+                   int vInt = Integer.parseInt(r);
+                   if (vInt == filter.getvInt()) {
+                       return filter;
+                   }
+               }
+
+           }
+           throw new IllegalArgumentException("Filter not found");
+       }
+    }
 }
