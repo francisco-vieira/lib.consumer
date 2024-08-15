@@ -20,6 +20,7 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -202,6 +203,42 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
         }
     }
 
+    public String put(String endpoint, String json) throws ServiceException {
+        return this.put(endpoint, json, new HashMap<>());
+    }
+
+    public String put(String endpoint, String json, Map<String, String> params) throws ServiceException{
+        return this.put(endpoint, json, params, ContentType.APPLICATION_JSON);
+    }
+
+    public String put(String endpoint, String json, Map<String, String> params, ContentType type) throws ServiceException {
+
+        try {
+            StringEntity entity1 = new StringEntity(json, type);
+            HttpPut httpPut = getHttpPut(endpoint, params);
+            httpPut.setEntity(entity1);
+            headers().forEach(httpPut::setHeader);
+
+            httpPut.setHeader("Content-Type", type.getMimeType());
+            ResponseHandler<String> handler = (final HttpResponse response) -> {
+                response.getStatusLine().getStatusCode();
+                HttpEntity entity = response.getEntity();
+                for (Header r : response.getHeaders(AUTHORIZATION)) {
+                    AuthorizationToken.authorization(r.getValue());
+                }
+                return entity != null ? EntityUtils.toString(entity) : null;
+            };
+            String body = this.http.execute(httpPut, handler); // Alterado para httpPut
+            error(body);
+
+            return body;
+        } catch (RuntimeException | IOException | URISyntaxException e) {
+            ProcessorUtil.writeLogger(ConsumerAbs.class)
+                    .severe(e.toString());
+            throw new ServiceException(e);
+        }
+    }
+
     public Boolean delete(String endpoint) throws ServiceException {
         return this.delete(endpoint, new HashMap<>());
     }
@@ -264,6 +301,19 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
         URI uri = loadParams(params, httpPost.getURI());
         httpPost.setURI(uri);
         return httpPost;
+    }
+
+    private HttpPut getHttpPut(String endpoint, Map<String, String> params) throws URISyntaxException {
+
+        HttpPut httpPut = new HttpPut(withBar(endpoint));
+        httpPut.setConfig(requestConfig());
+
+        if (AuthorizationToken.isTokenValid()) {
+            httpPut.setHeader(AUTHORIZATION, AuthorizationToken.getTokenAuthorization());
+        }
+        URI uri = loadParams(params, httpPut.getURI());
+        httpPut.setURI(uri);
+        return httpPut;
     }
 
     private URI loadParams(Map<String, String> params, URI uri) throws URISyntaxException {

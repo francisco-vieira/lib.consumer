@@ -32,6 +32,13 @@ public interface IConsumer<T> {
 
     String post(String point, String json, Map<String, String> params, ContentType type) throws ServiceException;
 
+    //   POST
+    String put(String point, String json) throws ServiceException;
+
+    String put(String point, String json, Map<String, String> params) throws ServiceException;
+
+    String put(String point, String json, Map<String, String> params, ContentType type) throws ServiceException;
+
     //   DELETE
     Boolean delete(String point) throws ServiceException;
 
