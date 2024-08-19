@@ -154,9 +154,23 @@ public class StringUtils {
 
     private static String stringValidate(String value) {
         if (isNotEmpty(value)) {
-            value = value.trim();
+            value = value.
+                    replace(" ", "").
+                    trim();
+
             if (value.contains(",") && value.contains(".")) {
-                return value.replace(".", "");
+                value = value.replace(".", "");
+            }
+
+            if(value.contains(",")){
+                StringBuilder result = new StringBuilder();
+                for (char str : value.toCharArray()){
+                    if(str == ',' && result.toString().contains(",")){
+                        continue;
+                    }
+                    result.append(str);
+                }
+                value = result.toString();
             }
 
         } else {
