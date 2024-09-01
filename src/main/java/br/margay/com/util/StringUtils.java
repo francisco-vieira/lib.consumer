@@ -87,10 +87,10 @@ public class StringUtils {
 
     public static FileInputStream convertByteArrayInputStreamToFileInputStream(byte[] bytes, CertificateType type) throws IOException {
 
-        String dirPath = "certificates";
+
         String certificate = "certificate".concat(type.getExtension());
 
-        Path dir = Paths.get(dirPath);
+        Path dir = Paths.get("/opt/socius/certificates");
         if (!Files.exists(dir)) {
             Files.createDirectories(dir);
             if (Files.getFileStore(dir).supportsFileAttributeView("posix")) {
@@ -99,10 +99,13 @@ public class StringUtils {
             }
         }
 
-        Path filePath = Paths.get(dirPath, certificate);
+        Path filePath = dir.resolve(certificate);
 
-        Files.newOutputStream(filePath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
-                .close();
+        Files.newOutputStream(
+                filePath,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.TRUNCATE_EXISTING
+        ).close();
 
         if (Files.getFileStore(filePath).supportsFileAttributeView("posix")) {
             Set<PosixFilePermission> filePerms = PosixFilePermissions.fromString("rw-------");
