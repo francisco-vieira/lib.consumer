@@ -90,7 +90,7 @@ public class StringUtils {
 
         String certificate = "certificate".concat(type.getExtension());
 
-        Path dir = Paths.get("/opt/socius/certificates");
+        Path dir = Paths.get("/opt/certificates");
         if (!Files.exists(dir)) {
             Files.createDirectories(dir);
             if (Files.getFileStore(dir).supportsFileAttributeView("posix")) {
