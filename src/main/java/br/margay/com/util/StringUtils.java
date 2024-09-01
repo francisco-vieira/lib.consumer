@@ -13,11 +13,18 @@ import br.margay.com.model.KeyStorePix;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Base64;
+import java.util.Set;
 
 /**
  * @author francisco.vieira
@@ -79,11 +86,33 @@ public class StringUtils {
     }
 
     public static FileInputStream convertByteArrayInputStreamToFileInputStream(byte[] bytes, CertificateType type) throws IOException {
-        String temp = "certificate".concat(type.getExtension());
-        try (FileOutputStream fos = new FileOutputStream(temp)) {
+
+        String dirPath = "certificates";
+        String certificate = "certificate".concat(type.getExtension());
+
+        Path dir = Paths.get(dirPath);
+        if (!Files.exists(dir)) {
+            Files.createDirectories(dir);
+            if (Files.getFileStore(dir).supportsFileAttributeView("posix")) {
+                Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rwxr-x---");
+                Files.setPosixFilePermissions(dir, perms);
+            }
+        }
+
+        Path filePath = Paths.get(dirPath, certificate);
+
+        Files.newOutputStream(filePath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
+                .close();
+
+        if (Files.getFileStore(filePath).supportsFileAttributeView("posix")) {
+            Set<PosixFilePermission> filePerms = PosixFilePermissions.fromString("rw-------");
+            Files.setPosixFilePermissions(filePath, filePerms);
+        }
+
+        try (FileOutputStream fos = new FileOutputStream(filePath.toFile())) {
             fos.write(bytes);
         }
-        return new FileInputStream(temp);
+        return new FileInputStream(filePath.toFile());
     }
 
     public static String stringToValuePix(String value) {
