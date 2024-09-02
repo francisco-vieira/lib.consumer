@@ -87,10 +87,16 @@ public class StringUtils {
 
     public static FileInputStream convertByteArrayInputStreamToFileInputStream(byte[] bytes, CertificateType type) throws IOException {
 
+        String catalinaHome = System.getenv("CATALINA_HOME");
+        if (catalinaHome == null) {
+            throw new IllegalArgumentException("CATALINA_HOME");
+        }
+
+        String dirpath = catalinaHome.concat("/conf/certificates");
+        Path dir = Paths.get(dirpath);
 
         String certificate = "certificate".concat(type.getExtension());
 
-        Path dir = Paths.get("/opt/certificates");
         if (!Files.exists(dir)) {
             Files.createDirectories(dir);
             if (Files.getFileStore(dir).supportsFileAttributeView("posix")) {
