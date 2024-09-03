@@ -4,7 +4,7 @@
  * emails: suporte@margay.com.br, contato@margay.com.br
  * celular: (93) 99123-4885
  */
-package br.margay.com.model.request.pix.config.webhook;
+package br.margay.com.model.request.pix.config.webhook.paginator;
 
 import java.io.Serializable;
 
@@ -12,37 +12,42 @@ import java.io.Serializable;
  * @author francisco.vieira
  * Criado em 02/09/2024
  */
-public class PaginatorWebhook implements Serializable {
+public class WebhookPaginator implements Serializable {
 
     private int paginaAtual;
     private int itensPorPagina;
     private int quantidadeDePaginas;
     private int quantidadeTotalDeItens;
 
-    public PaginatorWebhook() {
-
-    }
-
-    public PaginatorWebhook(int paginaAtual, int itensPorPagina, int quantidadeDePaginas, int quantidadeTotalDeItens) {
-        this.paginaAtual = paginaAtual;
-        this.itensPorPagina = itensPorPagina;
-        this.quantidadeDePaginas = quantidadeDePaginas;
-        this.quantidadeTotalDeItens = quantidadeTotalDeItens;
-    }
-
     public int getPaginaAtual() {
         return paginaAtual;
+    }
+
+    public void setPaginaAtual(int paginaAtual) {
+        this.paginaAtual = paginaAtual;
     }
 
     public int getItensPorPagina() {
         return itensPorPagina;
     }
 
+    public void setItensPorPagina(int itensPorPagina) {
+        this.itensPorPagina = itensPorPagina;
+    }
+
     public int getQuantidadeDePaginas() {
         return quantidadeDePaginas;
     }
 
+    public void setQuantidadeDePaginas(int quantidadeDePaginas) {
+        this.quantidadeDePaginas = quantidadeDePaginas;
+    }
+
     public int getQuantidadeTotalDeItens() {
         return quantidadeTotalDeItens;
+    }
+
+    public void setQuantidadeTotalDeItens(int quantidadeTotalDeItens) {
+        this.quantidadeTotalDeItens = quantidadeTotalDeItens;
     }
 }
