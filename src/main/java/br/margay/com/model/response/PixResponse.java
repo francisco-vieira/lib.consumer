@@ -170,6 +170,14 @@ public final class PixResponse implements Serializable {
         this.config = config;
     }
 
+    public List<Pix> getPix() {
+        return pix;
+    }
+
+    public void setPix(List<Pix> pix) {
+        this.pix = pix;
+    }
+
     public static Builder builder() {
         return new Builder();
     }

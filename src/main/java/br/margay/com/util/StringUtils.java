@@ -25,6 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Base64;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author francisco.vieira
@@ -304,4 +305,10 @@ public class StringUtils {
            throw new IllegalArgumentException("Filter not found");
        }
     }
+
+    public String keyGen(){
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
+    }
+
 }
