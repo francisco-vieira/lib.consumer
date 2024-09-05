@@ -7,6 +7,7 @@
 package br.margay.com.model.response;
 
 
+import br.margay.com.enums.pix.StatusPix;
 import br.margay.com.model.response.pix.Devedor;
 import br.margay.com.model.request.pix.InfoAdicional;
 import br.margay.com.model.request.pix.Valor;
@@ -35,7 +36,7 @@ public final class PixResponse implements Serializable {
     private String pixCopiaECola;
     private String txid;
     private int revisao;
-    private String status;
+    private StatusPix status;
     private List<InfoAdicional> infoAdicionais;
     private ConfiguracaoSplit config;
 
@@ -47,7 +48,7 @@ public final class PixResponse implements Serializable {
     public PixResponse(Calendario calendario, Devedor devedor, Localidade loc,
                        Valor valor,
                        String solicitacaoPagador, String chave, String location,
-                       String pixCopiaECola, String txid, int revisao, String status,
+                       String pixCopiaECola, String txid, int revisao, StatusPix status,
                        List<InfoAdicional> infoAdicionais,
                        ConfiguracaoSplit config, List<Pix> pix) {
         this.calendario = calendario;
@@ -146,11 +147,11 @@ public final class PixResponse implements Serializable {
         this.revisao = revisao;
     }
 
-    public String getStatus() {
+    public StatusPix getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusPix status) {
         this.status = status;
     }
 
@@ -193,7 +194,7 @@ public final class PixResponse implements Serializable {
         private String pixCopiaECola;
         private String txid;
         private int revisao;
-        private String status;
+        private StatusPix status;
         private List<InfoAdicional> infoAdicionais;
 
         private ConfiguracaoSplit config;
@@ -250,7 +251,7 @@ public final class PixResponse implements Serializable {
             return this;
         }
 
-        public Builder status(String status) {
+        public Builder status(StatusPix status) {
             this.status = status;
             return this;
         }
