@@ -42,4 +42,8 @@ public class Webhook implements java.io.Serializable {
         this.criacao = criacao;
     }
 
+    @Override
+    public String toString() {
+        return "Webhook [webhookUrl=" + webhookUrl + ", chave=" + chave + ", criacao=" + criacao + "]";
+    }
 }

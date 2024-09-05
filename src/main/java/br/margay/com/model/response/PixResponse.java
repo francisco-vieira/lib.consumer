@@ -13,6 +13,7 @@ import br.margay.com.model.request.pix.Valor;
 import br.margay.com.model.request.pix.config.efi.ConfiguracaoSplit;
 import br.margay.com.model.response.pix.Calendario;
 import br.margay.com.model.response.pix.Localidade;
+import br.margay.com.model.response.pix.Pix;
 
 import java.io.Serializable;
 import java.util.List;
@@ -38,23 +39,17 @@ public final class PixResponse implements Serializable {
     private List<InfoAdicional> infoAdicionais;
     private ConfiguracaoSplit config;
 
+    private List<Pix> pix;
+
     public PixResponse() {
     }
 
-    public PixResponse(Calendario calendario,
-                       Devedor devedor,
-                       Localidade loc,
+    public PixResponse(Calendario calendario, Devedor devedor, Localidade loc,
                        Valor valor,
-                       String solicitacaoPagador,
-                       String chave,
-                       String location,
-                       String pixCopiaECola,
-                       String txid,
-                       int revisao,
-                       String status,
+                       String solicitacaoPagador, String chave, String location,
+                       String pixCopiaECola, String txid, int revisao, String status,
                        List<InfoAdicional> infoAdicionais,
-                       ConfiguracaoSplit config) {
-
+                       ConfiguracaoSplit config, List<Pix> pix) {
         this.calendario = calendario;
         this.devedor = devedor;
         this.loc = loc;
@@ -68,6 +63,7 @@ public final class PixResponse implements Serializable {
         this.status = status;
         this.infoAdicionais = infoAdicionais;
         this.config = config;
+        this.pix = pix;
     }
 
     public String getChave() {
@@ -194,6 +190,8 @@ public final class PixResponse implements Serializable {
 
         private ConfiguracaoSplit config;
 
+        private List<Pix> pix;
+
         public Builder chave(String chave) {
             this.chave = chave;
             return this;
@@ -259,6 +257,11 @@ public final class PixResponse implements Serializable {
             return this;
         }
 
+        public Builder pix(List<Pix> pix) {
+            this.pix = pix;
+            return this;
+        }
+
         public PixResponse build() {
             return new PixResponse(calendario,
                     devedor,
@@ -272,7 +275,8 @@ public final class PixResponse implements Serializable {
                     revisao,
                     status,
                     infoAdicionais,
-                    config);
+                    config,
+                    pix);
         }
     }
 }
