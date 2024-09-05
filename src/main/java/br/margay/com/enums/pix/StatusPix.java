@@ -42,17 +42,18 @@ public enum StatusPix {
         for (StatusPix status : StatusPix.values()) {
 
             String desc = String.valueOf(object);
-            if(object instanceof StatusPix && desc.equals(status.name())){
+            if (object instanceof StatusPix && desc.equals(status.name())) {
                 return status;
             }
 
-            if (status.getDescricao().equals(desc)) {
+            if (object instanceof String &&
+                    (status.getDescricao().equalsIgnoreCase(desc) || status.name().equalsIgnoreCase(desc))) {
                 return status;
             }
 
         }
 
-        throw  new ServiceException("Status not found");
+        throw new ServiceException("Status not found");
     }
 
 
