@@ -306,7 +306,7 @@ public class StringUtils {
        }
     }
 
-    public String keyGen(){
+    public static String keyGen(){
         UUID uuid = UUID.randomUUID();
         return uuid.toString();
     }
