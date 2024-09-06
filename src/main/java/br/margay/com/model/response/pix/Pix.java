@@ -16,12 +16,12 @@ public class Pix implements Serializable {
 
     private String endToEndId;
     private String txid;
-    private Double valor;
+    private String valor;
     private String chave;
     private String horario;
 
 
-    public Pix(String endToEndId, String txid, Double valor, String chave, String horario) {
+    public Pix(String endToEndId, String txid, String valor, String chave, String horario) {
         this.endToEndId = endToEndId;
         this.txid = txid;
         this.valor = valor;
@@ -45,11 +45,11 @@ public class Pix implements Serializable {
         this.txid = txid;
     }
 
-    public Double getValor() {
+    public String getValor() {
         return valor;
     }
 
-    public void setValor(Double valor) {
+    public void setValor(String valor) {
         this.valor = valor;
     }
 
@@ -77,7 +77,7 @@ public class Pix implements Serializable {
 
         private String endToEndId;
         private String txid;
-        private Double valor;
+        private String valor;
         private String chave;
         private String horario;
 
@@ -91,7 +91,7 @@ public class Pix implements Serializable {
             return this;
         }
 
-        public Builder valor(Double valor) {
+        public Builder valor(String valor) {
             this.valor = valor;
             return this;
         }
