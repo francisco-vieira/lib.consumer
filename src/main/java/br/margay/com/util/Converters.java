@@ -6,10 +6,12 @@
  */
 package br.margay.com.util;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,14 +24,16 @@ public class Converters {
     private Converters() {
     }
 
-    public static LocalDateTime toLocalDateTime(String dateString) {
+    public static Date toLocalDateTime(String dateString) {
 
         if (StringUtils.isEmpty(dateString)) {
             return null;
         }
         try {
             ZonedDateTime zonedDateTime = ZonedDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME);
-            return zonedDateTime.toLocalDateTime();
+
+            Instant instant = zonedDateTime.toInstant();
+            return Date.from(instant);
         } catch (DateTimeParseException e) {
             Logger.getLogger(Converters.class.getName())
                     .log(Level.WARNING, e.getMessage(), e);
