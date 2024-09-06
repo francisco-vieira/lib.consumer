@@ -22,6 +22,10 @@ public class ResponseMessage implements Serializable {
     public ResponseMessage() {
     }
 
+    public static ResponseMessage builder(){
+        return new ResponseMessage();
+    }
+
     public ResponseMessage(String status, String message) {
         this.status = status;
         this.message = message;
