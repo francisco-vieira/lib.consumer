@@ -14,26 +14,26 @@ import java.io.Serializable;
  */
 public class Valor implements Serializable {
 
-    private String original;
+    private Double original;
     private String modalidadeAlteracao;
 
     public Valor() {
     }
 
-    public Valor(String original) {
+    public Valor(Double original) {
         this.original = original;
     }
 
-    public Valor(String original, String modalidadeAlteracao) {
+    public Valor(Double original, String modalidadeAlteracao) {
         this.original = original;
         this.modalidadeAlteracao = modalidadeAlteracao;
     }
 
-    public String getOriginal() {
+    public Double getOriginal() {
         return original;
     }
 
-    public void setOriginal(String original) {
+    public void setOriginal(Double original) {
         this.original = original;
     }
 
