@@ -24,14 +24,29 @@ public class Converters {
     private Converters() {
     }
 
-    public static Date toLocalDateTime(String dateString) {
+    public static LocalDateTime toLocalDateTime(String dateString) {
 
         if (StringUtils.isEmpty(dateString)) {
             return null;
         }
         try {
             ZonedDateTime zonedDateTime = ZonedDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME);
+            return zonedDateTime.toLocalDateTime();
+        } catch (DateTimeParseException e) {
+            Logger.getLogger(Converters.class.getName())
+                    .log(Level.WARNING, e.getMessage(), e);
+            return null;
+        }
 
+    }
+
+    public static Date toDate(String dateString) {
+
+        if (StringUtils.isEmpty(dateString)) {
+            return null;
+        }
+        try {
+            ZonedDateTime zonedDateTime = ZonedDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME);
             Instant instant = zonedDateTime.toInstant();
             return Date.from(instant);
         } catch (DateTimeParseException e) {
