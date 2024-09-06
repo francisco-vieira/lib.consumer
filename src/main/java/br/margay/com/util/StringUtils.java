@@ -311,4 +311,8 @@ public class StringUtils {
         return uuid.toString();
     }
 
+    public static String identificator(){
+        return keyGen().replace("-", "");
+    }
+
 }
