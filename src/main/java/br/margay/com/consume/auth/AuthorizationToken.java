@@ -122,7 +122,8 @@ public class AuthorizationToken {
     public static void configurePreferencesDirectory() {
         try {
 
-            String customPrefsDir = System.getProperty("user.home").concat("\\prefs");
+            String catalinaHome = System.getenv("CATALINA_HOME");
+            String customPrefsDir = catalinaHome.concat("/conf/prefs");
 
             String userPrefsDir = System.getProperty("java.util.prefs.userRoot");
             Path defaultPrefsPath = StringUtils.isEmpty(userPrefsDir) ? null : Paths.get(userPrefsDir);
@@ -138,20 +139,13 @@ public class AuthorizationToken {
                 if (!Files.exists(customDirPath)) {
 
                     String osName = System.getProperty("os.name").toLowerCase();
-
-                    if (osName.contains("win")) {
-                        Files.createDirectories(customDirPath);
-                    } else if (Files.getFileStore(customDirPath).supportsFileAttributeView(PosixFileAttributeView.class)) {
+                    Files.createDirectories(customDirPath);
+                    if (!osName.contains("win") && Files.getFileStore(customDirPath).supportsFileAttributeView(PosixFileAttributeView.class)) {
                         Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rwxr-x---");
-                        FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
-                        Files.createDirectories(customDirPath, attr);
+                        Files.setPosixFilePermissions(customDirPath, perms);
                         logger.info("Diretório de preferências personalizado criado com permissões POSIX: rwxr-x---");
-                    } else {
-                        Files.createDirectories(customDirPath);
-                        logger.info("Diretório de preferências personalizado criado sem permissões POSIX.");
                     }
 
-                    logger.info("Diretório de preferências personalizado criado com sucesso.");
                 } else {
                     logger.info("Diretório de preferências: OK");
                 }
