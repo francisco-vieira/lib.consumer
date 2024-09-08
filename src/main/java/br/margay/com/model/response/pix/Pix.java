@@ -7,6 +7,7 @@
 package br.margay.com.model.response.pix;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author francisco.vieira
@@ -19,14 +20,20 @@ public class Pix implements Serializable {
     private String valor;
     private String chave;
     private String horario;
+    private Pagador pagador;
+    private String infoPagador;
+    private List<Develocao> devolucoes;
 
-
-    public Pix(String endToEndId, String txid, String valor, String chave, String horario) {
+    public Pix(String endToEndId, String txid, String valor, String chave, String horario, Pagador pagador,
+               String infoPagador, List<Develocao> devolucoes) {
         this.endToEndId = endToEndId;
         this.txid = txid;
         this.valor = valor;
         this.chave = chave;
         this.horario = horario;
+        this.pagador = pagador;
+        this.infoPagador = infoPagador;
+        this.devolucoes = devolucoes;
     }
 
     public String getEndToEndId() {
@@ -69,7 +76,31 @@ public class Pix implements Serializable {
         this.horario = horario;
     }
 
-    public static Builder builder(){
+    public Pagador getPagador() {
+        return pagador;
+    }
+
+    public void setPagador(Pagador pagador) {
+        this.pagador = pagador;
+    }
+
+    public String getInfoPagador() {
+        return infoPagador;
+    }
+
+    public void setInfoPagador(String infoPagador) {
+        this.infoPagador = infoPagador;
+    }
+
+    public List<Develocao> getDevolucoes() {
+        return devolucoes;
+    }
+
+    public void setDevolucoes(List<Develocao> devolucoes) {
+        this.devolucoes = devolucoes;
+    }
+
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -80,6 +111,9 @@ public class Pix implements Serializable {
         private String valor;
         private String chave;
         private String horario;
+        private Pagador pagador;
+        private String infoPagador;
+        private List<Develocao> devolucoes;
 
         public Builder endToEndId(String endToEndId) {
             this.endToEndId = endToEndId;
@@ -106,9 +140,24 @@ public class Pix implements Serializable {
             return this;
         }
 
+        public Builder pagador(Pagador pagador) {
+            this.pagador = pagador;
+            return this;
+        }
+
+        public Builder infoPagador(String infoPagador) {
+            this.infoPagador = infoPagador;
+            return this;
+        }
+
+        public Builder devolucoes(List<Develocao> devolucoes) {
+            this.devolucoes = devolucoes;
+            return this;
+        }
+
         public Pix build() {
 
-            return new Pix(endToEndId, txid, valor, chave, horario);
+            return new Pix(endToEndId, txid, valor, chave, horario, pagador, infoPagador, devolucoes);
 
         }
     }
