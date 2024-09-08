@@ -1,6 +1,7 @@
 package br.margay.com.consume.auth;
 
 import br.margay.com.exception.ServiceException;
+import br.margay.com.util.StringUtils;
 import com.google.common.base.Strings;
 
 import javax.xml.bind.DatatypeConverter;
@@ -30,7 +31,7 @@ public class AuthorizationToken {
 
     public AuthorizationToken(String token) {
 
-        configurePreferencesDirectory("/opt/prefs");
+        configurePreferencesDirectory();
 
         if (!Strings.isNullOrEmpty(token) && tokenType != AuthorizationType.TOKEN_BASIC) {
             Preferences prefs = Preferences.userNodeForPackage(AuthorizationToken.class);
@@ -117,13 +118,15 @@ public class AuthorizationToken {
         AuthorizationToken.expirationTime =  expirationTime * 1000L;
     }
 
-    public static void configurePreferencesDirectory(String customPrefsDir) {
+    public static void configurePreferencesDirectory() {
         try {
 
-            String userPrefsDir = System.getProperty("java.util.prefs.userRoot");
-            Path defaultPrefsPath = Paths.get(userPrefsDir);
+            String customPrefsDir = System.getProperty("home.user");
 
-            if (!Files.exists(defaultPrefsPath) || !Files.isWritable(defaultPrefsPath)) {
+            String userPrefsDir = System.getProperty("java.util.prefs.userRoot");
+            Path defaultPrefsPath = StringUtils.isEmpty(userPrefsDir) ? null : Paths.get(userPrefsDir);
+
+            if ( defaultPrefsPath !=null && (!Files.exists(defaultPrefsPath) || !Files.isWritable(defaultPrefsPath))) {
                 logger.warning("O diretório padrão de preferências não está acessível.");
                 logger.warning("Usando diretório personalizado.");
 
