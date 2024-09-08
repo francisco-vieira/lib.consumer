@@ -122,7 +122,7 @@ public class AuthorizationToken {
     public static void configurePreferencesDirectory() {
         try {
 
-            String customPrefsDir = System.getProperty("home.user");
+            String customPrefsDir = System.getProperty("user.home");
 
             String userPrefsDir = System.getProperty("java.util.prefs.userRoot");
             Path defaultPrefsPath = StringUtils.isEmpty(userPrefsDir) ? null : Paths.get(userPrefsDir);
