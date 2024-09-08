@@ -4,9 +4,10 @@
  * emails: suporte@margay.com.br, contato@margay.com.br
  * celular: (93) 99123-4885
  */
-package br.margay.com.model.request.pix.config.webhook;
+package br.margay.com.model.response.pix.paginator.pages;
 
-import br.margay.com.model.request.pix.config.webhook.paginator.WebhookParam;
+import br.margay.com.model.response.pix.config.Webhook;
+import br.margay.com.model.response.pix.paginator.PixParam;
 
 import java.io.Serializable;
 import java.util.List;
@@ -17,14 +18,14 @@ import java.util.List;
  */
 public class WebhookPage implements Serializable {
 
-  private WebhookParam parametros;
+  private PixParam parametros;
   private List<Webhook> webhooks;
 
-    public WebhookParam getParametros() {
+    public PixParam getParametros() {
         return parametros;
     }
 
-    public void setParametros(WebhookParam parametros) {
+    public void setParametros(PixParam parametros) {
         this.parametros = parametros;
     }
 

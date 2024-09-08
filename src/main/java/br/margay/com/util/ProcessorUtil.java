@@ -11,7 +11,7 @@ import br.margay.com.consume.adapter.StringAdapter;
 import br.margay.com.enums.pix.CertificateType;
 import br.margay.com.enums.pix.PSPPix;
 import br.margay.com.exception.ServiceException;
-import br.margay.com.model.KeyStorePix;
+import br.margay.com.model.KeyStoreAPI;
 import com.google.api.client.util.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -71,6 +71,10 @@ public class ProcessorUtil {
     public static void generateQRCodeImage(String text, int width, int height, String filePath) throws ServiceException {
         try {
 
+            if(StringUtils.isEmpty(text)){
+                throw new ServiceException("text is empty");
+            }
+            
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
             BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
 
@@ -99,13 +103,13 @@ public class ProcessorUtil {
     }
 
 
-    public static Map<PSPPix, KeyStorePix> loadKeyStore(String certif, CertificateType certificateType, PSPPix psp) throws ServiceException {
+    public static Map<PSPPix, KeyStoreAPI> loadKeyStore(String certif, CertificateType certificateType, PSPPix psp) throws ServiceException {
         return loadKeyStore(certif, "", certificateType, psp);
     }
 
-    public static Map<PSPPix, KeyStorePix> loadKeyStore(String certif, String senha, CertificateType certificateType, PSPPix psp) throws ServiceException {
+    public static Map<PSPPix, KeyStoreAPI> loadKeyStore(String certif, String senha, CertificateType certificateType, PSPPix psp) throws ServiceException {
 
-        Map<PSPPix, KeyStorePix> keyStoreMap = new EnumMap<>(PSPPix.class);
+        Map<PSPPix, KeyStoreAPI> keyStoreMap = new EnumMap<>(PSPPix.class);
         char[] password = senha.toCharArray();
 
         File file = new File(certif);
@@ -116,7 +120,7 @@ public class ProcessorUtil {
                     outputStream.write(buffer, 0, length);
                 }
             String certificate = StringUtils.encodeToString(outputStream.toByteArray());
-            KeyStorePix pix = KeyStorePix.builder()
+            KeyStoreAPI pix = KeyStoreAPI.builder()
                     .password(new String(password))
                     .certificate(certificate)
                     .certificateType(certificateType)

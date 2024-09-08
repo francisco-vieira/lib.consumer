@@ -4,17 +4,13 @@
  * emails: suporte@margay.com.br, contato@margay.com.br
  * celular: (93) 991663577
  */
-package br.margay.com.model.response;
+package br.margay.com.model.response.pix;
 
 
 import br.margay.com.enums.pix.StatusPix;
-import br.margay.com.model.response.pix.Devedor;
 import br.margay.com.model.request.pix.InfoAdicional;
 import br.margay.com.model.request.pix.Valor;
 import br.margay.com.model.request.pix.config.efi.ConfiguracaoSplit;
-import br.margay.com.model.response.pix.Calendario;
-import br.margay.com.model.response.pix.Localidade;
-import br.margay.com.model.response.pix.Pix;
 
 import java.io.Serializable;
 import java.util.List;
@@ -45,7 +41,7 @@ public final class PixResponse implements Serializable {
     public PixResponse() {
     }
 
-    public PixResponse(Calendario calendario, Devedor devedor, Localidade loc,
+    private PixResponse(Calendario calendario, Devedor devedor, Localidade loc,
                        Valor valor,
                        String solicitacaoPagador, String chave, String location,
                        String pixCopiaECola, String txid, int revisao, StatusPix status,

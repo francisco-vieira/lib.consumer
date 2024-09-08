@@ -11,7 +11,7 @@ import br.margay.com.exception.ServiceException;
 import br.margay.com.enums.pix.CertificateType;
 import br.margay.com.enums.cnpj.HostBase;
 import br.margay.com.consume.ConsumerAbs;
-import br.margay.com.model.KeyStorePix;
+import br.margay.com.model.KeyStoreAPI;
 import br.margay.com.util.ProcessorUtil;
 import com.google.api.client.util.Strings;
 import com.google.gson.Gson;
@@ -31,8 +31,8 @@ public class Consumer extends ConsumerAbs {
         super(path, password, certificateType);
     }
 
-    public Consumer(KeyStorePix storePix) {
-        super(storePix);
+    public Consumer(KeyStoreAPI storeAPI) {
+        super(storeAPI);
     }
 
     public static Consumer getInstance() {
@@ -47,7 +47,7 @@ public class Consumer extends ConsumerAbs {
         return getInstance(path, "", certificateType);
     }
 
-    public static Consumer getInstance(KeyStorePix storePix) {
+    public static Consumer getInstance(KeyStoreAPI storePix) {
         return new Consumer(storePix);
     }
 

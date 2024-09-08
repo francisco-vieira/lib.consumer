@@ -4,7 +4,7 @@
  * emails: suporte@margay.com.br, contato@margay.com.br
  * celular: (93) 99123-4885
  */
-package br.margay.com.model.request.pix.config.webhook.paginator;
+package br.margay.com.model.response.pix.paginator;
 
 import java.io.Serializable;
 
@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author francisco.vieira
  * Criado em 02/09/2024
  */
-public class WebhookPaginator implements Serializable {
+public class PixPaginator implements Serializable {
 
     private int paginaAtual;
     private int itensPorPagina;

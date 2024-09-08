@@ -8,7 +8,7 @@ package br.margay.com.util;
 
 import br.margay.com.enums.pix.CertificateType;
 import br.margay.com.exception.ServiceException;
-import br.margay.com.model.KeyStorePix;
+import br.margay.com.model.KeyStoreAPI;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,7 +19,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -69,13 +68,13 @@ public class StringUtils {
         return value == null ? null : Base64.getEncoder().encodeToString(value);
     }
 
-    public static KeyStore base64ToKeyStore(KeyStorePix storePix) throws ServiceException {
+    public static java.security.KeyStore base64ToKeyStore(KeyStoreAPI storePix) throws ServiceException {
 
         byte[] fileByte = decodeToBytes(storePix.getCertificate());
 
         try (FileInputStream stream = convertByteArrayInputStreamToFileInputStream(fileByte, storePix.getCertificateType())) {
 
-            KeyStore keyStore = KeyStore.getInstance(storePix.getCertificateType().toString());
+            java.security.KeyStore keyStore = java.security.KeyStore.getInstance(storePix.getCertificateType().toString());
             char[] password = storePix.getPassword().toCharArray();
             keyStore.load(stream, password);
 
@@ -90,7 +89,7 @@ public class StringUtils {
 
         String catalinaHome = System.getenv("CATALINA_HOME");
         if (catalinaHome == null) {
-            throw new IllegalArgumentException("CATALINA_HOME");
+           catalinaHome = System.getProperty("user.home");
         }
 
         String dirpath = catalinaHome.concat("/conf/certificates");
@@ -254,6 +253,16 @@ public class StringUtils {
         }
 
         return builder.toString();
+    }
+
+    public static int countSymbol(char symbol, String input) {
+             int count = 0;
+            for (char c : input.toCharArray()) {
+                if (c == symbol) {
+                    count++;
+                }
+            }
+            return count;
     }
 
    public enum Filter {

@@ -4,7 +4,7 @@
  * emails: suporte@margay.com.br, contato@margay.com.br
  * celular: (93) 991663577
  */
-package br.margay.com.model.response.pix;
+package br.margay.com.model.response.pix.config;
 
 import br.margay.com.enums.pix.PSPPix;
 import br.margay.com.ipack.IConfigPix;
@@ -33,10 +33,10 @@ public class PConfigPix implements IConfigPix {
 
     private PSPPix pspPix;
 
-    private PConfigPix() {
+    public PConfigPix() {
     }
 
-    public PConfigPix(String scopes, String chavePix, String clienteId, String clienteSecret,
+    private PConfigPix(String scopes, String chavePix, String clienteId, String clienteSecret,
                       String certificado, String chavePrivada, String senha, String cnpj,
                       String token, String developerApplicationKey, String accountID, PSPPix pspPix) {
         this.scopes = scopes;

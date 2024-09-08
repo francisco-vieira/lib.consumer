@@ -4,7 +4,7 @@
  * emails: suporte@margay.com.br, contato@margay.com.br
  * celular: (93) 99123-4885
  */
-package br.margay.com.model.response.pix.config;
+package br.margay.com.model.request.pix.config;
 
 import java.io.Serializable;
 
@@ -19,7 +19,7 @@ public class WebhookBody implements Serializable {
     public WebhookBody() {
     }
 
-    public WebhookBody(String webhookUrl) {
+    private WebhookBody(String webhookUrl) {
         this.webhookUrl = webhookUrl;
     }
 

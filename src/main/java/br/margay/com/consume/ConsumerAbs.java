@@ -8,7 +8,7 @@ import br.margay.com.exception.ServiceException;
 import br.margay.com.ipack.IConsumer;
 import br.margay.com.enums.pix.CertificateType;
 import br.margay.com.enums.cnpj.HostBase;
-import br.margay.com.model.KeyStorePix;
+import br.margay.com.model.KeyStoreAPI;
 import br.margay.com.util.ProcessorUtil;
 import br.margay.com.util.StringUtils;
 import com.google.api.client.util.Strings;
@@ -85,19 +85,19 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
         }
     }
 
-    protected ConsumerAbs(KeyStorePix storePix) throws ServiceException {
+    protected ConsumerAbs(KeyStoreAPI keyStoreAPI) throws ServiceException {
         try {
             this.headers = new HashMap<>();
 
-            String password = storePix.getPassword();
+            String password = keyStoreAPI.getPassword();
             if (StringUtils.isNull(password)) {
                 password = "";
-                storePix.setPassword(password);
+                keyStoreAPI.setPassword(password);
             }
 
             char[] pass = password.toCharArray();
 
-            KeyStore keyStore = StringUtils.base64ToKeyStore(storePix);
+            KeyStore keyStore = StringUtils.base64ToKeyStore(keyStoreAPI);
 
             http = HttpClients.custom()
                     .setSSLSocketFactory(new SSLConnectionSocketFactory(
@@ -143,8 +143,10 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
             error(body);
             return body;
         } catch (RuntimeException | IOException | URISyntaxException e) {
-            ProcessorUtil.writeLogger(ConsumerAbs.class).severe(e.toString());
-            throw new ServiceException(e);
+            String errorMessage = "Erro ao processar a solicitação no método get: " + e.getMessage();
+            ProcessorUtil.writeLogger(ConsumerAbs.class)
+                    .severe(errorMessage);
+            throw new ServiceException(errorMessage, e);
         }
     }
 
@@ -197,9 +199,10 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
 
             return body;
         } catch (RuntimeException | IOException | URISyntaxException e) {
+            String errorMessage = "Erro ao processar a solicitação no método post: " + e.getMessage();
             ProcessorUtil.writeLogger(ConsumerAbs.class)
-                    .severe(e.toString());
-            throw new ServiceException(e);
+                    .severe(errorMessage);
+            throw new ServiceException(errorMessage, e);
         }
     }
 
@@ -228,14 +231,15 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
                 }
                 return entity != null ? EntityUtils.toString(entity) : null;
             };
-            String body = this.http.execute(httpPut, handler); // Alterado para httpPut
+            String body = this.http.execute(httpPut, handler);
             error(body);
 
             return body;
         } catch (RuntimeException | IOException | URISyntaxException e) {
+            String errorMessage = "Erro ao processar a solicitação no método put: " + e.getMessage();
             ProcessorUtil.writeLogger(ConsumerAbs.class)
-                    .severe(e.toString());
-            throw new ServiceException(e);
+                    .severe(errorMessage);
+            throw new ServiceException(errorMessage, e);
         }
     }
 
@@ -259,8 +263,10 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
 
             return Boolean.valueOf(body);
         } catch (Exception e) {
-            ProcessorUtil.writeLogger(ConsumerAbs.class).severe(e.toString());
-            throw new ServiceException(e);
+            String errorMessage = "Erro ao processar a solicitação no método delete: " + e.getMessage();
+            ProcessorUtil.writeLogger(ConsumerAbs.class)
+                    .severe(errorMessage);
+            throw new ServiceException(errorMessage, e);
         }
 
     }
@@ -284,8 +290,10 @@ public abstract class ConsumerAbs implements IConsumer<ConsumerAbs> {
             error(this.http.execute(httpPost, handler));
 
         } catch (IOException | URISyntaxException e) {
-            ProcessorUtil.writeLogger(ConsumerAbs.class).severe(e.toString());
-            throw new ServiceException(e);
+            String errorMessage = "Erro ao processar a solicitação no método filePost: " + e.getMessage();
+            ProcessorUtil.writeLogger(ConsumerAbs.class)
+                    .severe(errorMessage);
+            throw new ServiceException(errorMessage, e);
         }
 
     }

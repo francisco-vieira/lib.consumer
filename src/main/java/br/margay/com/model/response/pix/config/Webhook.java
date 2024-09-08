@@ -4,7 +4,7 @@
  * emails: suporte@margay.com.br, contato@margay.com.br
  * celular: (93) 99123-4885
  */
-package br.margay.com.model.request.pix.config.webhook;
+package br.margay.com.model.response.pix.config;
 
 
 /**

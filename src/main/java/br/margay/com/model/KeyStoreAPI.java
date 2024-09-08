@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @author francisco.vieira
  * Criado em 29/05/2024
  */
-public class KeyStorePix implements Serializable {
+public class KeyStoreAPI implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -23,7 +23,7 @@ public class KeyStorePix implements Serializable {
 
     private CertificateType certificateType;
 
-    public KeyStorePix(String password, String certificate, CertificateType certificateType) {
+    public KeyStoreAPI(String password, String certificate, CertificateType certificateType) {
         this.password = password;
         this.certificate = certificate;
         this.certificateType = certificateType;
@@ -77,8 +77,8 @@ public class KeyStorePix implements Serializable {
             return this;
         }
 
-        public KeyStorePix build() {
-            return new KeyStorePix(this.password, this.certificate, this.certificateType);
+        public KeyStoreAPI build() {
+            return new KeyStoreAPI(this.password, this.certificate, this.certificateType);
         }
 
     }

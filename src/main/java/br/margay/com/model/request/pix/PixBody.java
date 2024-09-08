@@ -4,13 +4,7 @@
  * emails: suporte@margay.com.br, contato@margay.com.br
  * celular: (93) 991663577
  */
-package br.margay.com.model.request;
-
-import br.margay.com.model.request.pix.Calendario;
-import br.margay.com.model.request.pix.Devedor;
-import br.margay.com.model.request.pix.InfoAdicional;
-import br.margay.com.model.request.pix.Localidade;
-import br.margay.com.model.request.pix.Valor;
+package br.margay.com.model.request.pix;
 
 import java.io.Serializable;
 import java.util.List;

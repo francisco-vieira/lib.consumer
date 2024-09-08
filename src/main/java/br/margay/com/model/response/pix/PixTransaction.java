@@ -4,9 +4,7 @@
  * emails: suporte@margay.com.br, contato@margay.com.br
  * celular: (93) 99123-4885
  */
-package br.margay.com.model.response;
-
-import br.margay.com.model.response.pix.Pix;
+package br.margay.com.model.response.pix;
 
 import java.util.List;
 
