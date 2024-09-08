@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Set;
@@ -115,7 +116,7 @@ public class AuthorizationToken {
     }
 
     public static void expirationTime(long expirationTime) {
-        AuthorizationToken.expirationTime =  expirationTime * 1000L;
+        AuthorizationToken.expirationTime = expirationTime * 1000L;
     }
 
     public static void configurePreferencesDirectory() {
@@ -126,19 +127,25 @@ public class AuthorizationToken {
             String userPrefsDir = System.getProperty("java.util.prefs.userRoot");
             Path defaultPrefsPath = StringUtils.isEmpty(userPrefsDir) ? null : Paths.get(userPrefsDir);
 
-            if ( defaultPrefsPath !=null && (!Files.exists(defaultPrefsPath) || !Files.isWritable(defaultPrefsPath))) {
+            if (defaultPrefsPath == null || !Files.exists(defaultPrefsPath) || !Files.isWritable(defaultPrefsPath)) {
                 logger.warning("O diretório padrão de preferências não está acessível.");
                 logger.warning("Usando diretório personalizado.");
 
                 System.setProperty("java.util.prefs.userRoot", customPrefsDir);
                 System.setProperty("java.util.prefs.systemRoot", customPrefsDir);
 
-
                 Path customDirPath = Paths.get(customPrefsDir);
                 if (!Files.exists(customDirPath)) {
-                    Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rwxr-xr-x");
-                    FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
-                    Files.createDirectories(customDirPath, attr);
+
+                    if (Files.getFileStore(customDirPath).supportsFileAttributeView(PosixFileAttributeView.class)) {
+                        Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rwxr-x---");
+                        FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
+                        Files.createDirectories(customDirPath, attr);
+                        logger.info("Diretório de preferências personalizado criado com permissões POSIX: rwxr-x---");
+                    } else {
+                        Files.createDirectories(customDirPath);
+                        logger.info("Diretório de preferências personalizado criado sem permissões POSIX.");
+                    }
                     logger.info("Diretório de preferências personalizado criado com sucesso.");
                 } else {
                     logger.info("Diretório de preferências: OK");
