@@ -4,7 +4,16 @@ import br.margay.com.exception.ServiceException;
 import com.google.common.base.Strings;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Set;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 /**
@@ -12,12 +21,16 @@ import java.util.prefs.Preferences;
  */
 public class AuthorizationToken {
 
+    private static final Logger logger = Logger.getLogger(AuthorizationToken.class.getName());
+
     private static String token;
     private static AuthorizationType tokenType;
     private static long expirationTime;
     private static long tokenExpirationTime;
 
     public AuthorizationToken(String token) {
+
+        configurePreferencesDirectory("/opt/prefs");
 
         if (!Strings.isNullOrEmpty(token) && tokenType != AuthorizationType.TOKEN_BASIC) {
             Preferences prefs = Preferences.userNodeForPackage(AuthorizationToken.class);
@@ -102,6 +115,37 @@ public class AuthorizationToken {
 
     public static void expirationTime(long expirationTime) {
         AuthorizationToken.expirationTime =  expirationTime * 1000L;
+    }
+
+    public static void configurePreferencesDirectory(String customPrefsDir) {
+        try {
+
+            String userPrefsDir = System.getProperty("java.util.prefs.userRoot");
+            Path defaultPrefsPath = Paths.get(userPrefsDir);
+
+            if (!Files.exists(defaultPrefsPath) || !Files.isWritable(defaultPrefsPath)) {
+                logger.warning("O diretório padrão de preferências não está acessível.");
+                logger.warning("Usando diretório personalizado.");
+
+                System.setProperty("java.util.prefs.userRoot", customPrefsDir);
+                System.setProperty("java.util.prefs.systemRoot", customPrefsDir);
+
+
+                Path customDirPath = Paths.get(customPrefsDir);
+                if (!Files.exists(customDirPath)) {
+                    Set<PosixFilePermission> perms = PosixFilePermissions.fromString("rwxr-xr-x");
+                    FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(perms);
+                    Files.createDirectories(customDirPath, attr);
+                    logger.info("Diretório de preferências personalizado criado com sucesso.");
+                } else {
+                    logger.info("Diretório de preferências: OK");
+                }
+            } else {
+                logger.info("Diretório padrão de preferências está acessível.");
+            }
+        } catch (IOException e) {
+            logger.severe("Erro ao configurar o diretório de preferências: " + e.getMessage());
+        }
     }
 
 }
