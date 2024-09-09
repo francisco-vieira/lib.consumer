@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
@@ -123,7 +122,13 @@ public class AuthorizationToken {
         try {
 
             String catalinaHome = System.getenv("CATALINA_HOME");
-            String customPrefsDir = catalinaHome.concat("/conf/prefs");
+            String customPrefsDir;
+
+            if(StringUtils.isEmpty(catalinaHome)){
+                customPrefsDir = "/opt/prefs";
+            }else{
+               customPrefsDir = catalinaHome.concat("/conf/prefs");
+            }
 
             String userPrefsDir = System.getProperty("java.util.prefs.userRoot");
             Path defaultPrefsPath = StringUtils.isEmpty(userPrefsDir) ? null : Paths.get(userPrefsDir);
