@@ -10,6 +10,7 @@ import br.margay.com.consume.auth.AuthorizationToken;
 import br.margay.com.enums.pix.CertificateType;
 import br.margay.com.enums.pix.Endpoint;
 import br.margay.com.enums.pix.PSPPix;
+import br.margay.com.util.Supplement;
 import br.margay.com.model.KeyStoreAPI;
 
 import br.margay.com.model.request.pix.*;
@@ -125,7 +126,7 @@ class MainTest {
                 .build();
 
         String json = g.toJson(pixBody);
-        String result = c.post("/v2/cob", json);
+        String result = c.post(Endpoint.CHARGE_PIX_CREATE_IMMEDIATE.router(), json);
 
         System.out.println(result);
 
@@ -140,7 +141,7 @@ class MainTest {
         c.header("scope", configPix.getScopes());
         c.setBase(configPix.getPspPix().getAmbiente(2));
 
-        String value = c.get("v2/cob/938f7c58d7654585b4bf6336d968206f");
+        String value = c.get(Endpoint.CHARGE_PIX_DETAIL.router("938f7c58d7654585b4bf6336d968206f"));
         System.out.println(value);
 
     }
@@ -166,7 +167,7 @@ class MainTest {
         String json = g.toJson(pixBody);
 
         Map<String, String> params = new HashMap<>();
-        String res = c.post("v2/cob", json, params);
+        String res = c.post(Endpoint.CHARGE_PIX_CREATE_IMMEDIATE.router(), json, params);
 
         PixResponse response = g.fromJson(res, PixResponse.class);
         String stringPix = response.getPixCopiaECola();
@@ -185,10 +186,10 @@ class MainTest {
 
         c.setBase(configPix.getPspPix().getAmbiente(2));
 
-        String json = g.toJson(new GrantType("client_credentials"));
+        String json = g.toJson(new GrantType(Supplement.grant_type));
 
         Map<String, String> params = new HashMap<>();
-        String res = c.post("/oauth/token", json, params, ContentType.APPLICATION_JSON);
+        String res = c.post(Endpoint.AUTHORIZE.router(), json, params, ContentType.APPLICATION_JSON);
 
         AccessToken token = g.fromJson(res, AccessToken.class);
 
@@ -226,10 +227,10 @@ class MainTest {
 
         c.setBase(pspPix.getAmbiente(2));
 
-        String json = g.toJson(new GrantType("client_credentials"));
+        String json = g.toJson(new GrantType(Supplement.grant_type));
 
         Map<String, String> params = new HashMap<>();
-        String res = c.post("/oauth/token", json, params, ContentType.APPLICATION_JSON);
+        String res = c.post(Endpoint.AUTHORIZE.router(), json, params, ContentType.APPLICATION_JSON);
 
         AccessToken token = g.fromJson(res, AccessToken.class);
 
