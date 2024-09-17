@@ -62,8 +62,8 @@ public enum PSPPix {
     }
 
 
-    public int getCodigo() {
-        return codigo;
+    public String codigo() {
+        return String.valueOf(codigo);
     }
 
     /**

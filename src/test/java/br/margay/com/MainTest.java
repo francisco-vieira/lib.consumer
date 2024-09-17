@@ -10,25 +10,24 @@ import br.margay.com.consume.auth.AuthorizationToken;
 import br.margay.com.enums.pix.CertificateType;
 import br.margay.com.enums.pix.Endpoint;
 import br.margay.com.enums.pix.PSPPix;
-import br.margay.com.model.KeyStorePix;
+import br.margay.com.model.KeyStoreAPI;
+
+import br.margay.com.model.request.pix.*;
 import br.margay.com.model.request.pix.config.efi.ConfiguracaoSplit;
 import br.margay.com.model.request.pix.config.efi.Favorecido;
 import br.margay.com.model.request.pix.config.efi.Lancamento;
 import br.margay.com.model.request.pix.config.efi.MinhaParte;
 import br.margay.com.model.request.pix.config.efi.Repasse;
 import br.margay.com.model.request.pix.config.efi.Split;
-import br.margay.com.model.response.pix.PConfigPix;
+
 import br.margay.com.model.request.cnpj.SuframaBody;
 import br.margay.com.enums.cnpj.HostBase;
 import br.margay.com.consume.impl.Consumer;
-import br.margay.com.model.request.pix.Calendario;
-import br.margay.com.model.request.pix.Devedor;
-import br.margay.com.model.request.pix.InfoAdicional;
-import br.margay.com.model.request.pix.Valor;
-import br.margay.com.model.request.pix.GrantType;
-import br.margay.com.model.request.PixBody;
+
 import br.margay.com.model.response.pix.AccessToken;
-import br.margay.com.model.response.PixResponse;
+
+import br.margay.com.model.response.pix.PixResponse;
+import br.margay.com.model.response.pix.config.PConfigPix;
 import br.margay.com.util.ProcessorUtil;
 import com.google.api.client.util.Strings;
 import com.google.gson.Gson;
@@ -51,9 +50,9 @@ class MainTest {
 
     PConfigPix configPix = PConfigPix.build()
 
-            .token("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiY2xpZW50SWQiOiJDbGllbnRfSWRfYjNmOTlkYjQwZTFlYzIwNmRiODYxOTRmNGNiOTZjMDNkMzBkYTA1YSIsImFjY291bnQiOjU3MDg3NCwiYWNjb3VudF9jb2RlIjoiOWMxMDBjZjYwMjFmZTViM2YyNTI0MTkzNzRiM2UzMDAiLCJzY29wZXMiOlsiY29iLnJlYWQiLCJjb2Iud3JpdGUiLCJjb2J2LnJlYWQiLCJjb2J2LndyaXRlIiwiZ24uYmFsYW5jZS5yZWFkIiwiZ24ucGl4LmV2cC5yZWFkIiwiZ24ucGl4LmV2cC53cml0ZSIsImduLnBpeC5zZW5kLnJlYWQiLCJnbi5yZXBvcnRzLnJlYWQiLCJnbi5yZXBvcnRzLndyaXRlIiwiZ24uc2V0dGluZ3MucmVhZCIsImduLnNldHRpbmdzLndyaXRlIiwiZ24uc3BsaXQucmVhZCIsImduLnNwbGl0LndyaXRlIiwibG90ZWNvYnYucmVhZCIsImxvdGVjb2J2LndyaXRlIiwicGF5bG9hZGxvY2F0aW9uLnJlYWQiLCJwYXlsb2FkbG9jYXRpb24ud3JpdGUiLCJwaXgucmVhZCIsInBpeC5zZW5kIiwicGl4LndyaXRlIiwid2ViaG9vay5yZWFkIiwid2ViaG9vay53cml0ZSJdLCJleHBpcmVzSW4iOjM2MDAsImNvbmZpZ3VyYXRpb24iOnsieDV0I1MyNTYiOiJ1QnIxelpaL2NwT05GZ2ZOL0RHdmdFVkZSeVo5ZlNyNlR0VEJWWlI5WVB3PSJ9LCJpYXQiOjE3MjAyMTA3NzIsImV4cCI6MTcyMDIxNDM3Mn0.KN5DKw1uhGqQEd5xWJOAoltM5C9GDlAVrKz8_Jz30jg")
+            .token("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiY2xpZW50SWQiOiJDbGllbnRfSWRfYjNmOTlkYjQwZTFlYzIwNmRiODYxOTRmNGNiOTZjMDNkMzBkYTA1YSIsImFjY291bnQiOjU3MDg3NCwiYWNjb3VudF9jb2RlIjoiOWMxMDBjZjYwMjFmZTViM2YyNTI0MTkzNzRiM2UzMDAiLCJzY29wZXMiOlsiY29iLnJlYWQiLCJjb2Iud3JpdGUiLCJjb2J2LnJlYWQiLCJjb2J2LndyaXRlIiwiZ24uYmFsYW5jZS5yZWFkIiwiZ24uaW5mcmFjdGlvbnMucmVhZCIsImduLmluZnJhY3Rpb25zLndyaXRlIiwiZ24ucGl4LmV2cC5yZWFkIiwiZ24ucGl4LmV2cC53cml0ZSIsImduLnBpeC5zZW5kLnJlYWQiLCJnbi5xcmNvZGVzLnBheSIsImduLnFyY29kZXMucmVhZCIsImduLnJlcG9ydHMucmVhZCIsImduLnJlcG9ydHMud3JpdGUiLCJnbi5zZXR0aW5ncy5yZWFkIiwiZ24uc2V0dGluZ3Mud3JpdGUiLCJnbi5zcGxpdC5yZWFkIiwiZ24uc3BsaXQud3JpdGUiLCJsb3RlY29idi5yZWFkIiwibG90ZWNvYnYud3JpdGUiLCJwYXlsb2FkbG9jYXRpb24ucmVhZCIsInBheWxvYWRsb2NhdGlvbi53cml0ZSIsInBpeC5yZWFkIiwicGl4LnNlbmQiLCJwaXgud3JpdGUiLCJ3ZWJob29rLnJlYWQiLCJ3ZWJob29rLndyaXRlIl0sImV4cGlyZXNJbiI6MzYwMCwiY29uZmlndXJhdGlvbiI6eyJ4NXQjUzI1NiI6InVCcjF6WlovY3BPTkZnZk4vREd2Z0VWRlJ5WjlmU3I2VHRUQlZaUjlZUHc9In0sImlhdCI6MTcyNjU2OTE1NCwiZXhwIjoxNzI2NTcyNzU0fQ.EeHRAaWaHhMAKhzi7R7GT0I2588BWQyNZ1YzpT2Zzk4")
             .scopes("cob.read cob.write cobv.read cobv.write gn.balance.read gn.pix.evp.read gn.pix.evp.write gn.pix.send.read gn.reports.read gn.reports.write gn.settings.read gn.settings.write gn.split.read gn.split.write lotecobv.read lotecobv.write payloadlocation.read payloadlocation.write pix.read pix.send pix.write webhook.read webhook.write")
-            .certificado("certificate.p12")
+            .certificado("C:\\develops\\certificate-hml.p12")
             .clienteId("")
             .clienteSecret("")
             .chavePix("")
@@ -219,9 +218,9 @@ class MainTest {
         AuthorizationToken.authorization(configPix.getClienteId(), configPix.getClienteSecret());
 
         PSPPix pspPix = PSPPix.EFI;
-        Map<PSPPix, KeyStorePix> result = ProcessorUtil.loadKeyStore(configPix.getCertificado(), CertificateType.PKCS_12, pspPix);
+        Map<PSPPix, KeyStoreAPI> result = ProcessorUtil.loadKeyStore(configPix.getCertificado(), CertificateType.PKCS_12, pspPix);
 
-        KeyStorePix storePix = result.get(pspPix);
+        KeyStoreAPI storePix = result.get(pspPix);
 
         Consumer c = Consumer.getInstance(storePix);
 
@@ -269,7 +268,7 @@ class MainTest {
                 .build();
 
 
-        String endpoint = Endpoint.PIX_SPLIT_CONFIG.getRoute();
+        String endpoint = Endpoint.SPLIT_PIX_CONFIG.router();
         String json = g.toJson(configuracaoSplit);
         String res = c.post(endpoint, json);
         System.out.println(res);

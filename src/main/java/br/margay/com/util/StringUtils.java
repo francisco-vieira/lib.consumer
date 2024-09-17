@@ -7,6 +7,7 @@
 package br.margay.com.util;
 
 import br.margay.com.enums.pix.CertificateType;
+import br.margay.com.enums.pix.PSPPix;
 import br.margay.com.exception.ServiceException;
 import br.margay.com.model.KeyStoreAPI;
 
@@ -19,6 +20,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -72,9 +74,9 @@ public class StringUtils {
 
         byte[] fileByte = decodeToBytes(storePix.getCertificate());
 
-        try (FileInputStream stream = convertByteArrayInputStreamToFileInputStream(fileByte, storePix.getCertificateType())) {
+        try (FileInputStream stream = convertByteArrayInputStreamToFileInputStream(fileByte, storePix)) {
 
-            java.security.KeyStore keyStore = java.security.KeyStore.getInstance(storePix.getCertificateType().toString());
+            KeyStore keyStore = KeyStore.getInstance(storePix.getCertificateType().toString());
             char[] password = storePix.getPassword().toCharArray();
             keyStore.load(stream, password);
 
@@ -85,7 +87,7 @@ public class StringUtils {
         }
     }
 
-    public static FileInputStream convertByteArrayInputStreamToFileInputStream(byte[] bytes, CertificateType type) throws IOException {
+    public static FileInputStream convertByteArrayInputStreamToFileInputStream(byte[] bytes, KeyStoreAPI storeAPI) throws IOException {
 
         String catalinaHome = System.getenv("CATALINA_HOME");
         if (catalinaHome == null) {
@@ -95,7 +97,14 @@ public class StringUtils {
         String dirpath = catalinaHome.concat("/conf/certificates");
         Path dir = Paths.get(dirpath);
 
-        String certificate = "certificate".concat(type.getExtension());
+
+        CertificateType type =  storeAPI.getCertificateType();
+
+        PSPPix psp = storeAPI.getPspPix();
+
+        String certificate = psp == null ?
+                "certificate".concat(type.getExtension()) :
+                String.format("certificate_%s_%s", psp.codigo(), type.getExtension());
 
         if (!Files.exists(dir)) {
             Files.createDirectories(dir);
@@ -107,20 +116,23 @@ public class StringUtils {
 
         Path filePath = dir.resolve(certificate);
 
-        Files.newOutputStream(
-                filePath,
-                StandardOpenOption.CREATE,
-                StandardOpenOption.TRUNCATE_EXISTING
-        ).close();
+        if(ProcessorUtil.expiredCertificate(filePath)) {
+            Files.newOutputStream(
+                    filePath,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING
+            ).close();
 
-        if (Files.getFileStore(filePath).supportsFileAttributeView("posix")) {
-            Set<PosixFilePermission> filePerms = PosixFilePermissions.fromString("rw-------");
-            Files.setPosixFilePermissions(filePath, filePerms);
+            if (Files.getFileStore(filePath).supportsFileAttributeView("posix")) {
+                Set<PosixFilePermission> filePerms = PosixFilePermissions.fromString("rw-------");
+                Files.setPosixFilePermissions(filePath, filePerms);
+            }
+
+            try (FileOutputStream fos = new FileOutputStream(filePath.toFile())) {
+                fos.write(bytes);
+            }
         }
 
-        try (FileOutputStream fos = new FileOutputStream(filePath.toFile())) {
-            fos.write(bytes);
-        }
         return new FileInputStream(filePath.toFile());
     }
 

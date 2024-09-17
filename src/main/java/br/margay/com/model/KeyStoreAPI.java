@@ -7,6 +7,7 @@
 package br.margay.com.model;
 
 import br.margay.com.enums.pix.CertificateType;
+import br.margay.com.enums.pix.PSPPix;
 
 import java.io.Serializable;
 
@@ -20,13 +21,15 @@ public class KeyStoreAPI implements Serializable {
 
     private String password;
     private String certificate;
+    private PSPPix pspPix;
 
     private CertificateType certificateType;
 
-    public KeyStoreAPI(String password, String certificate, CertificateType certificateType) {
+    public KeyStoreAPI(String password, String certificate, CertificateType certificateType, PSPPix pspPix) {
         this.password = password;
         this.certificate = certificate;
         this.certificateType = certificateType;
+        this.pspPix = pspPix;
     }
 
     public String getPassword() {
@@ -53,6 +56,13 @@ public class KeyStoreAPI implements Serializable {
         this.certificateType = certificateType;
     }
 
+    public PSPPix getPspPix() {
+        return pspPix;
+    }
+    public void setPspPix(PSPPix pspPix) {
+        this.pspPix = pspPix;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -61,6 +71,7 @@ public class KeyStoreAPI implements Serializable {
         private String password;
         private String certificate;
         private CertificateType certificateType;
+        private PSPPix pspPix;
 
         public Builder password(String password) {
             this.password = password;
@@ -76,9 +87,13 @@ public class KeyStoreAPI implements Serializable {
             this.certificateType = certificateType;
             return this;
         }
+        public Builder pspPix(PSPPix pspPix) {
+            this.pspPix = pspPix;
+            return this;
+        }
 
         public KeyStoreAPI build() {
-            return new KeyStoreAPI(this.password, this.certificate, this.certificateType);
+            return new KeyStoreAPI(this.password, this.certificate, this.certificateType, this.pspPix);
         }
 
     }
